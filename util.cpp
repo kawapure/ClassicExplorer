@@ -8,6 +8,85 @@
 
 namespace CEUtil
 {
+	CESettings GetCESettings()
+	{
+		DWORD showGoButton = 1;
+		DWORD showAddressLabel = 1;
+		ClassicExplorerTheme theme = CLASSIC_EXPLORER_2K;
+		HKEY hKey;
+		LSTATUS ls = RegOpenKeyExW(HKEY_CURRENT_USER, L"SOFTWARE\\ClassicExplorer\\AddressAndThrobber", 0, KEY_READ, &hKey);
+		if (ls != ERROR_SUCCESS)
+		{
+			// Key doesn't exist, make it
+			ls = RegCreateKeyW(HKEY_CURRENT_USER, L"SOFTWARE\\ClassicExplorer\\AddressAndThrobber", &hKey);
+			if (ls != ERROR_SUCCESS) // sum ting wong
+				return CESettings(CLASSIC_EXPLORER_NONE, -1, -1);
+
+			// Open the new key with write access
+			RegOpenKeyExW(HKEY_CURRENT_USER, L"SOFTWARE\\ClassicExplorer\\AddressAndThrobber", 0, KEY_WRITE, &hKey);
+
+			// Write default values and return default settings
+			WCHAR themeDef[] = L"2K";
+			RegSetValueExW(hKey, L"Theme", 0, REG_SZ, (BYTE*)themeDef, 4);
+			RegSetValueExW(hKey, L"ShowGoButton", 0, REG_DWORD, (BYTE*)&showGoButton, 4);
+			RegSetValueExW(hKey, L"ShowAddressLabel", 0, REG_DWORD, (BYTE*)&showAddressLabel, 4);
+			return CESettings(CLASSIC_EXPLORER_2K, 1, 1);
+		}
+		// Read settings
+		WCHAR themeRead[8];
+		DWORD size = 8;
+		RegGetValueW(hKey, NULL, L"Theme", RRF_RT_REG_SZ, NULL, themeRead, &size);
+		if (wcscmp(themeRead, L"XP") == 0)
+		{
+			theme = CLASSIC_EXPLORER_XP;
+		}
+		else if (wcscmp(themeRead, L"10") == 0)
+		{
+			theme = CLASSIC_EXPLORER_10;
+		}
+	
+		DWORD dwValueSize = sizeof(DWORD);
+		RegGetValueW(hKey, NULL, L"ShowGoButton", RRF_RT_REG_DWORD, NULL, &showGoButton, &dwValueSize);
+		RegGetValueW(hKey, NULL, L"ShowAddressLabel", RRF_RT_REG_DWORD, NULL, &showAddressLabel, &dwValueSize);
+
+		RegCloseKey(hKey);
+
+		return CESettings(theme, showGoButton, showAddressLabel);
+	}
+
+	void WriteCESettings(CESettings& toWrite)
+	{
+		HKEY hKey;
+		LSTATUS ls = RegOpenKeyExW(HKEY_CURRENT_USER, L"SOFTWARE\\ClassicExplorer\\AddressAndThrobber", 0, KEY_WRITE, &hKey);
+		if (ls != ERROR_SUCCESS)
+		{
+			// Key doesn't exist, make it
+			ls = RegCreateKeyW(HKEY_CURRENT_USER, L"SOFTWARE\\ClassicExplorer\\AddressAndThrobber", &hKey);
+			if (ls != ERROR_SUCCESS) // sum ting wong
+				return;
+
+			// Open the new key with write access
+			RegOpenKeyExW(HKEY_CURRENT_USER, L"SOFTWARE\\ClassicExplorer\\AddressAndThrobber", 0, KEY_WRITE, &hKey);
+		}
+		if (toWrite.theme != CLASSIC_EXPLORER_NONE)
+		{
+			WCHAR theme[] = L"2K";
+			if (toWrite.theme == CLASSIC_EXPLORER_XP)
+				wcscpy_s(theme, L"XP");
+			if (toWrite.theme == CLASSIC_EXPLORER_10)
+				wcscpy_s(theme, L"10");
+			RegSetValueExW(hKey, L"Theme", 0, REG_SZ, (BYTE*)theme, 4);
+		}
+		if (toWrite.showGoButton != -1)
+		{
+			RegSetValueExW(hKey, L"ShowGoButton", 0, REG_DWORD, (BYTE*)&toWrite.showGoButton, 4);
+		}
+		if (toWrite.showAddressLabel != -1)
+		{
+			RegSetValueExW(hKey, L"ShowAddressLabel", 0, REG_DWORD, (BYTE*)&toWrite.showAddressLabel, 4);
+		}
+		RegCloseKey(hKey);
+	}
 
 /*
  * FixExplorerSizes: Manually correct the sizes of all children in the explorer
@@ -24,7 +103,7 @@ namespace CEUtil
  * 
  * NOTE: Find a better way of invalidating the explorer visual?
  */
-HRESULT FixExplorerSizes(HWND hWndExplorerChild)
+	HRESULT FixExplorerSizes(HWND hWndExplorerChild)
 {
 	HWND hWndExplorerRoot = GetAncestor(hWndExplorerChild, GA_ROOTOWNER);
 	if (!IsWindow(hWndExplorerRoot))

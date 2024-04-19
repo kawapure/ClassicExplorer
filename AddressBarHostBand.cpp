@@ -21,36 +21,25 @@
 
 #include "AddressBarHostBand.h"
 
-static char GetAddressAccelerator()
-{
-	WCHAR szBuffer[64];
-
-	// Load "Address" string from resources.
-	if (!LoadStringW(
-		_AtlBaseModule.GetResourceInstance(),
-		IDS_ADDRESSBANDLABEL,
-		szBuffer,
-		_countof(szBuffer)
-	))
-	{
-		return L'\0';
-	}
-
-	for (int i = 0; i < _countof(szBuffer); i++)
-	{
-		if (szBuffer[i] == L'\0')
-			break;
-
-		if (szBuffer[i - 1] == L'&')
-			return (char)szBuffer[i];
-	}
-
-	return L'\0';
-}
+std::wstring AddressBarHostBand::m_addressText = L"";
 
 //================================================================================================================
 // implement IDeskBand:
 //
+
+char AddressBarHostBand::GetAddressAccelerator()
+{
+	for (int i = 0; i < m_addressText.length(); i++)
+	{
+		if (m_addressText[i] == L'\0')
+			break;
+
+		if (m_addressText[i - 1] == L'&')
+			return (char)m_addressText[i];
+	}
+
+	return L'\0';
+}
 
 /*
  * GetBandInfo: This is queried by the Shell and must return relevant information about
@@ -90,16 +79,14 @@ STDMETHODIMP AddressBarHostBand::GetBandInfo(DWORD dwBandId, DWORD dwViewMode, D
 		}
 		if (pDbi->dwMask & DBIM_TITLE)
 		{
-			// Load "Address" string from resources.
-			if (!LoadStringW(
-				_AtlBaseModule.GetResourceInstance(),
-				IDS_ADDRESSBANDLABEL,
-				pDbi->wszTitle,
-				_countof(pDbi->wszTitle)
-			))
+			CEUtil::CESettings cS = CEUtil::GetCESettings();
+			if (cS.showAddressLabel == 0) //Show no label
 			{
-				return HRESULT_FROM_WIN32(GetLastError());
+				wcscpy_s(pDbi->wszTitle, L"");
+				return S_OK;
 			}
+			wcscpy_s(pDbi->wszTitle, m_addressText.c_str());
+			return S_OK;
 		}
 		if (pDbi->dwMask & DBIM_BKCOLOR)
 		{
@@ -218,6 +205,20 @@ STDMETHODIMP AddressBarHostBand::SetSite(IUnknown *pUnkSite)
 
 			m_addressBar.SetBrowsers(pShellBrowser, m_pWebBrowser);
 			m_addressBar.InitComboBox();
+		}
+		if (m_addressText == L"")
+		{
+			HMODULE explorerframe = LoadLibrary(L"explorerframe.dll");
+			if (explorerframe)
+			{
+				WCHAR* addressText = new WCHAR[32];
+				LoadStringW(explorerframe, 12896, addressText, 32);
+				m_addressText = addressText;
+				delete[] addressText;
+				FreeLibrary(explorerframe);
+			}
+			else
+				m_addressText = L"Error";
 		}
 	}
 	else // unhook:

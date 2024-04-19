@@ -12,6 +12,8 @@
 
 #include "AddressBar.h"
 
+std::wstring AddressBar::m_goText = L"";
+
 /*
  * OnCreate: Handle the WM_CREATE message sent out and create the address bar controls.
  */
@@ -19,7 +21,72 @@ LRESULT AddressBar::OnCreate(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL &bHan
 {
 	HINSTANCE moduleInstance = _AtlBaseModule.GetModuleInstance();
 
-	m_showGoButton = TRUE;
+	m_showGoButton = true;
+
+	HKEY hKey;
+	LSTATUS result = RegOpenKeyExW(HKEY_CLASSES_ROOT, L"CLSID\\{FC5A7312-CFFE-4BF1-83E8-22D44C040568}\\", 0, KEY_READ, &hKey);
+
+	if (result != ERROR_SUCCESS)
+	{
+		return E_FAIL;
+	}
+
+	/*WCHAR dgb[8];
+	WCHAR theme[8];
+	size_t size1 = 8;
+	size_t size2 = 8;
+
+	LSTATUS l1 = RegGetValueW(hKey, L"DisplayGoButton", NULL, RRF_RT_REG_SZ, NULL, dgb, (LPDWORD)&size1);
+	LSTATUS l2 = RegGetValueW(hKey, L"Theme", NULL, RRF_RT_REG_SZ, NULL, theme, (LPDWORD)&size2);
+
+	if (wcscmp(dgb, L"0") == 0)
+		m_showGoButton = false;
+
+	if (wcscmp(theme, L"2K") == 0)
+	{
+		m_theme = CLASSIC_EXPLORER_2K;
+	}
+	else if (wcscmp(theme, L"XP") == 0)
+	{
+		m_theme = CLASSIC_EXPLORER_XP;
+	}
+	else if (wcscmp(theme, L"10") == 0)
+	{
+		m_theme = CLASSIC_EXPLORER_10;
+	}
+
+	RegCloseKey(hKey);*/
+
+	CEUtil::CESettings cS = CEUtil::GetCESettings();
+	m_showGoButton = cS.showGoButton;
+	m_theme = cS.theme;
+
+	if (m_goText == L"")
+	{
+		HMODULE explorerframe = LoadLibrary(L"explorerframe.dll");
+		if (explorerframe)
+		{
+			WCHAR* goText = new WCHAR[32];
+			LoadStringW(explorerframe, 12656, goText, 32);
+			m_goText = goText;
+			delete[] goText;
+			FreeLibrary(explorerframe);
+
+			m_goText.erase(m_goText.begin());
+			auto it = m_goText.begin();
+			while (it != m_goText.end())
+			{
+				if (*it == L' ')
+				{
+					m_goText.erase(it, m_goText.end());
+					break;
+				}
+				++it;
+			}
+		}
+		else
+			m_goText = L"Error";
+	}
 
 	m_toolbar = CreateWindowEx(
 		WS_EX_TOOLWINDOW,
@@ -90,23 +157,36 @@ LRESULT AddressBar::CreateGoButton()
 
 	const TBBUTTON goButtonInfo[] = { {0, 1, TBSTATE_ENABLED, 0} };
 	HINSTANCE resourceInstance = _AtlBaseModule.GetResourceInstance();
+	int go_inactive_bitmap = IDB_10_GO_INACTIVE;
+	int go_active_bitmap = IDB_10_GO_ACTIVE;
+
+	if (m_theme == CLASSIC_EXPLORER_2K)
+	{
+		go_inactive_bitmap = IDB_2K_GO_INACTIVE;
+		go_active_bitmap = IDB_2K_GO_ACTIVE;
+	}
+	else if (m_theme == CLASSIC_EXPLORER_XP)
+	{
+		go_inactive_bitmap = IDB_XP_GO_INACTIVE;
+		go_active_bitmap = IDB_XP_GO_ACTIVE;
+	}
 
 	m_himlGoInactive = ImageList_LoadImageW(
 		resourceInstance,
-		MAKEINTRESOURCEW(IDB_GO_INACTIVE),
+		MAKEINTRESOURCEW(go_inactive_bitmap),
 		20,
 		0,
-		RGB(255, 0, 255),
+		RGB(0, 0, 0),
 		IMAGE_BITMAP,
 		LR_CREATEDIBSECTION
 	);
 
 	m_himlGoActive = ImageList_LoadImageW(
 		resourceInstance,
-		MAKEINTRESOURCEW(IDB_GO_ACTIVE),
+		MAKEINTRESOURCEW(go_active_bitmap),
 		20,
 		0,
-		RGB(255, 0, 255),
+		RGB(0, 0, 0),
 		IMAGE_BITMAP,
 		LR_CREATEDIBSECTION
 	);
@@ -140,18 +220,7 @@ LRESULT AddressBar::CreateGoButton()
 
 	WCHAR pwszGoLabel[255];
 
-	// Load "Go" string from resources.
-	if (!LoadStringW(
-		_AtlBaseModule.GetResourceInstance(),
-		IDS_GOBUTTONLABEL,
-		pwszGoLabel,
-		_countof(pwszGoLabel)
-	))
-	{
-		return HRESULT_FROM_WIN32(GetLastError());
-	}
-
-	::SendMessage(m_goButton, TB_ADDSTRINGW, 0, (LPARAM)pwszGoLabel);
+	::SendMessage(m_goButton, TB_ADDSTRINGW, 0, (LPARAM)m_goText.c_str());
 
 	// add the go button:
 	::SendMessage(m_goButton, TB_ADDBUTTONSW, 1, (LPARAM)&goButtonInfo);

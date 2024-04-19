@@ -102,25 +102,55 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <Image Include="DefaultResources\go_active.bmp">
-      <Filter>Resource Files\Default Resources</Filter>
-    </Image>
-    <Image Include="DefaultResources\go_inactive.bmp">
-      <Filter>Resource Files\Default Resources</Filter>
-    </Image>
-    <Image Include="DefaultResources\throbber_s1.bmp">
-      <Filter>Resource Files\Default Resources</Filter>
-    </Image>
-    <Image Include="DefaultResources\throbber_s0.bmp">
-      <Filter>Resource Files\Default Resources</Filter>
-    </Image>
-    <Image Include="DefaultResources\throbber_s2.bmp">
-      <Filter>Resource Files\Default Resources</Filter>
-    </Image>
-  </ItemGroup>
-  <ItemGroup>
     <Midl Include="ClassicExplorer.idl">
       <Filter>Source Files\Main</Filter>
     </Midl>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="DefaultResources\2k_go_active.bmp">
+      <Filter>Resource Files\Default Resources</Filter>
+    </Image>
+    <Image Include="DefaultResources\2k_go_inactive.bmp">
+      <Filter>Resource Files\Default Resources</Filter>
+    </Image>
+    <Image Include="DefaultResources\2k_throbber_s0.bmp">
+      <Filter>Resource Files\Default Resources</Filter>
+    </Image>
+    <Image Include="DefaultResources\2k_throbber_s1.bmp">
+      <Filter>Resource Files\Default Resources</Filter>
+    </Image>
+    <Image Include="DefaultResources\2k_throbber_s2.bmp">
+      <Filter>Resource Files\Default Resources</Filter>
+    </Image>
+    <Image Include="DefaultResources\10_go_active.bmp">
+      <Filter>Resource Files\Default Resources</Filter>
+    </Image>
+    <Image Include="DefaultResources\10_go_inactive.bmp">
+      <Filter>Resource Files\Default Resources</Filter>
+    </Image>
+    <Image Include="DefaultResources\10_throbber_s0.bmp">
+      <Filter>Resource Files\Default Resources</Filter>
+    </Image>
+    <Image Include="DefaultResources\10_throbber_s1.bmp">
+      <Filter>Resource Files\Default Resources</Filter>
+    </Image>
+    <Image Include="DefaultResources\10_throbber_s2.bmp">
+      <Filter>Resource Files\Default Resources</Filter>
+    </Image>
+    <Image Include="DefaultResources\xp_go_active.bmp">
+      <Filter>Resource Files\Default Resources</Filter>
+    </Image>
+    <Image Include="DefaultResources\xp_go_inactive.bmp">
+      <Filter>Resource Files\Default Resources</Filter>
+    </Image>
+    <Image Include="DefaultResources\xp_throbber_s0.bmp">
+      <Filter>Resource Files\Default Resources</Filter>
+    </Image>
+    <Image Include="DefaultResources\xp_throbber_s1.bmp">
+      <Filter>Resource Files\Default Resources</Filter>
+    </Image>
+    <Image Include="DefaultResources\xp_throbber_s2.bmp">
+      <Filter>Resource Files\Default Resources</Filter>
+    </Image>
   </ItemGroup>
 </Project>

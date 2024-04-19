@@ -2,6 +2,7 @@
 
 #pragma once
 
+
 class CAddressBarModule : public ATL::CAtlDllModuleT<CAddressBarModule>
 {
 public :

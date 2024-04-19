@@ -8,6 +8,8 @@
 #include "resource.h"
 #include "ClassicExplorer_i.h"
 #include "dllmain.h"
+#include "util.h"
+#include <string>
 
 class AddressBar : public CWindowImpl<AddressBar>
 {
@@ -27,6 +29,8 @@ class AddressBar : public CWindowImpl<AddressBar>
 		WCHAR m_displayName[1024] = { 0 };
 		WCHAR m_currentPath[1024] = { 0 };
 		bool m_locationHasPhysicalPath = false;
+		static std::wstring m_goText;
+		ClassicExplorerTheme m_theme;
 
 		// This Internet Explorer API is also compatible with File Explorer, and
 		// provides useful events.

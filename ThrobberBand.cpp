@@ -35,10 +35,29 @@ LRESULT ThrobberBand::OnPaint(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL &bHa
 	destinationPoint.x = (clientRect.right - clientRect.left - m_cxCurBmp) / 2;
 	destinationPoint.y = (clientRect.bottom - clientRect.top - m_cyCurBmp) / 2;
 
-	::SetBkColor(dc, RGB(255, 255, 255));
+	/*static COLORREF background = RGB(255, 0, 0);
+	if(background == RGB(255, 0, 0))
+	{
+		switch (g_theme)
+		{
+		case CLASSIC_EXPLORER_10:
+		case CLASSIC_EXPLORER_XP:
+			background = RGB(255, 255, 255);
+			break;
+		case CLASSIC_EXPLORER_2K:
+			background = RGB(0, 0, 0);
+			break;
+		default:
+			background = RGB(255, 0, 0);
+			break;
+		}
+	}*/
+	COLORREF background = m_theme == CLASSIC_EXPLORER_2K ? RGB(0, 0, 0) : RGB(255, 255, 255);
+
+	SetBkColor(dc, background);
 
 	// Draw the background
-	HBRUSH bgBrush = CreateSolidBrush(RGB(255, 255, 255));
+	HBRUSH bgBrush = CreateSolidBrush(background);
 	FillRect(dc, &clientRect, bgBrush);
 	DeleteObject(bgBrush);
 
@@ -83,6 +102,56 @@ LRESULT ThrobberBand::OnEraseBackground(UINT uMsg, WPARAM wParam, LPARAM lParam,
 	return 1;
 }
 
+LRESULT ThrobberBand::OnClick(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled)
+{
+	CEUtil::CESettings currentSettings = CEUtil::GetCESettings();
+
+	HMENU hMenu = CreatePopupMenu();
+
+	AppendMenuW(hMenu, (m_theme == CLASSIC_EXPLORER_2K ? MF_CHECKED : MF_UNCHECKED) | MF_STRING, m_theme == CLASSIC_EXPLORER_2K ? 0 : 7000, L"2K Skin");
+	AppendMenuW(hMenu, (m_theme == CLASSIC_EXPLORER_XP ? MF_CHECKED : MF_UNCHECKED) | MF_STRING, m_theme == CLASSIC_EXPLORER_XP ? 0 : 7001, L"XP Skin");
+	AppendMenuW(hMenu, (m_theme == CLASSIC_EXPLORER_10 ? MF_CHECKED : MF_UNCHECKED) | MF_STRING, m_theme == CLASSIC_EXPLORER_10 ? 0 : 7002, L"10 Skin");
+
+	AppendMenuW(hMenu, MF_SEPARATOR, 0, 0);
+
+	AppendMenuW(hMenu, (currentSettings.showGoButton ? MF_CHECKED : MF_UNCHECKED) | MF_STRING, 7010, L"Show Go button");
+	AppendMenuW(hMenu, (currentSettings.showAddressLabel ? MF_CHECKED : MF_UNCHECKED) | MF_STRING, 7011, L"Show Address label");
+
+	POINT p;
+	p.x = GET_X_LPARAM(lParam);
+	p.y = GET_Y_LPARAM(lParam);
+	HWND hWnd;
+	GetWindow(&hWnd);
+	ClientToScreen(&p);
+
+	int sel = TrackPopupMenu(hMenu, TPM_RETURNCMD, p.x, p.y, 0, hWnd, NULL);
+	DestroyMenu(hMenu);
+
+	if(sel == 0) // Current theme selected, or outside click, nothing changes
+		return S_OK;
+	switch (sel)
+	{
+	case 7000:
+		CEUtil::WriteCESettings(CEUtil::CESettings(CLASSIC_EXPLORER_2K, -1, -1));
+		break;
+	case 7001:
+		CEUtil::WriteCESettings(CEUtil::CESettings(CLASSIC_EXPLORER_XP, -1, -1));
+		break;
+	case 7002:
+		CEUtil::WriteCESettings(CEUtil::CESettings(CLASSIC_EXPLORER_10, -1, -1));
+		break;
+	case 7010:
+		CEUtil::WriteCESettings(CEUtil::CESettings(CLASSIC_EXPLORER_NONE, !currentSettings.showGoButton, -1));
+		break;
+	case 7011:
+		CEUtil::WriteCESettings(CEUtil::CESettings(CLASSIC_EXPLORER_NONE, -1, !currentSettings.showAddressLabel));
+		break;
+	}
+	MessageBeep(0);
+	MessageBox(L"Open a new file explorer window to see the changes.");
+	return S_OK;
+}
+
 /*
  * LoadBitmapForSize: Load the desired throbber icon for the current size of the band.
  */
@@ -94,19 +163,55 @@ LRESULT ThrobberBand::LoadBitmapForSize()
 	DeleteObject(m_hBitmap);
 
 	int cySelf = curRect.bottom - curRect.top;
-	int resourceId = IDB_THROBBER_SIZE_SMALL;
+	int resourceId = IDB_10_THROBBER_SIZE_SMALL;
 
 	if (cySelf >= 38)
 	{
-		resourceId = IDB_THROBBER_SIZE_LARGE;
+		switch (m_theme)
+		{
+		default:
+		case CLASSIC_EXPLORER_10:
+			resourceId = IDB_10_THROBBER_SIZE_LARGE;
+			break;
+		case CLASSIC_EXPLORER_2K:
+			resourceId = IDB_2K_THROBBER_SIZE_LARGE;
+			break;
+		case CLASSIC_EXPLORER_XP:
+			resourceId = IDB_XP_THROBBER_SIZE_LARGE;
+			break;
+		}
 	}
 	else if (cySelf >= 26)
 	{
-		resourceId = IDB_THROBBER_SIZE_MID;
+		switch (m_theme)
+		{
+		default:
+		case CLASSIC_EXPLORER_10:
+			resourceId = IDB_10_THROBBER_SIZE_MID;
+			break;
+		case CLASSIC_EXPLORER_2K:
+			resourceId = IDB_2K_THROBBER_SIZE_MID;
+			break;
+		case CLASSIC_EXPLORER_XP:
+			resourceId = IDB_XP_THROBBER_SIZE_MID;
+			break;
+		}
 	}
 	else
 	{
-		resourceId = IDB_THROBBER_SIZE_SMALL;
+		switch (m_theme)
+		{
+		default:
+		case CLASSIC_EXPLORER_10:
+			resourceId = IDB_10_THROBBER_SIZE_SMALL;
+			break;
+		case CLASSIC_EXPLORER_2K:
+			resourceId = IDB_2K_THROBBER_SIZE_SMALL;
+			break;
+		case CLASSIC_EXPLORER_XP:
+			resourceId = IDB_XP_THROBBER_SIZE_SMALL;
+			break;
+		}
 	}
 
 	m_hBitmap = LoadBitmapW(
@@ -448,7 +553,7 @@ STDMETHODIMP ThrobberBand::SetSite(IUnknown *pUnkSite)
 		NULL,
 		WS_VISIBLE | WS_CHILD | WS_CLIPSIBLINGS | WS_CLIPCHILDREN
 	);
-
+	
 	if (!IsWindow())
 		return E_FAIL;
 
@@ -478,6 +583,10 @@ STDMETHODIMP ThrobberBand::SetSite(IUnknown *pUnkSite)
 	SetWindowSubclass(m_parentRebar, RebarSubclassProc, (UINT_PTR)this, (UINT_PTR)this);
 
 	m_subclassedRebar = true;
+
+	// Read settings from registry
+	CEUtil::CESettings cS = CEUtil::GetCESettings();
+	m_theme = cS.theme;
 
 	// Explorer may initialise our position onto a separate rebar until the sizes are
 	// invalidated, so let's manually invalidate to correct the position:

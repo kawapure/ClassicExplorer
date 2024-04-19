@@ -284,11 +284,21 @@
     </Midl>
   </ItemGroup>
   <ItemGroup>
-    <Image Include="DefaultResources\go_active.bmp" />
-    <Image Include="DefaultResources\go_inactive.bmp" />
-    <Image Include="DefaultResources\throbber_s0.bmp" />
-    <Image Include="DefaultResources\throbber_s1.bmp" />
-    <Image Include="DefaultResources\throbber_s2.bmp" />
+    <Image Include="DefaultResources\10_go_active.bmp" />
+    <Image Include="DefaultResources\10_go_inactive.bmp" />
+    <Image Include="DefaultResources\10_throbber_s0.bmp" />
+    <Image Include="DefaultResources\10_throbber_s1.bmp" />
+    <Image Include="DefaultResources\10_throbber_s2.bmp" />
+    <Image Include="DefaultResources\2k_go_active.bmp" />
+    <Image Include="DefaultResources\2k_go_inactive.bmp" />
+    <Image Include="DefaultResources\2k_throbber_s0.bmp" />
+    <Image Include="DefaultResources\2k_throbber_s1.bmp" />
+    <Image Include="DefaultResources\2k_throbber_s2.bmp" />
+    <Image Include="DefaultResources\xp_go_active.bmp" />
+    <Image Include="DefaultResources\xp_go_inactive.bmp" />
+    <Image Include="DefaultResources\xp_throbber_s0.bmp" />
+    <Image Include="DefaultResources\xp_throbber_s1.bmp" />
+    <Image Include="DefaultResources\xp_throbber_s2.bmp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

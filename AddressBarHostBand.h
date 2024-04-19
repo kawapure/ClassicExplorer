@@ -19,11 +19,13 @@ class ATL_NO_VTABLE AddressBarHostBand :
 	public IInputObject,
 	public IInputObjectSite
 {
+	char GetAddressAccelerator();
 	protected: // Class members:
 		IInputObjectSite *m_pSite = NULL;
 		HWND m_parentWindow = NULL;
 		AddressBar m_addressBar;
 		CComPtr<IWebBrowser2> m_pWebBrowser = NULL;
+		static std::wstring m_addressText;
 
 		friend class AddressBar;
 

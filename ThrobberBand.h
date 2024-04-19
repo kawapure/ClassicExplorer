@@ -19,12 +19,13 @@ class ATL_NO_VTABLE ThrobberBand :
 {
 	private: // Class members:
 		CComPtr<IWebBrowser2> m_pWebBrowser = NULL;
-
 		HWND m_parentRebar = NULL;
 		HBITMAP m_hBitmap = NULL;
 		bool m_subclassedRebar = false;
 		bool m_alreadyDeletedSelf = false;
 		bool m_shouldManuallyCorrectHeight = false;
+		
+		ClassicExplorerTheme m_theme = CLASSIC_EXPLORER_2K;
 
 		// Width of the current bitmap.
 		int m_cxCurBmp = 0;
@@ -50,6 +51,8 @@ class ATL_NO_VTABLE ThrobberBand :
 			MESSAGE_HANDLER(WM_PAINT, OnPaint)
 			MESSAGE_HANDLER(WM_SIZE, OnSize)
 			MESSAGE_HANDLER(WM_ERASEBKGND, OnEraseBackground)
+			MESSAGE_HANDLER(WM_LBUTTONUP, OnClick)
+			//MESSAGE_HANDLER(WM_COMMAND, OnCommand)
 		END_MSG_MAP()
 
 		BEGIN_COM_MAP(ThrobberBand)
@@ -77,6 +80,7 @@ class ATL_NO_VTABLE ThrobberBand :
 		LRESULT OnPaint(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL &bHandled);
 		LRESULT OnSize(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL &bHandled);
 		LRESULT OnEraseBackground(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL &bHandled);
+		LRESULT OnClick(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled);
 
 	protected: // Miscellaneous functions:
 		void ClearResources();
