@@ -23,40 +23,6 @@ LRESULT AddressBar::OnCreate(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL &bHan
 
 	m_showGoButton = true;
 
-	HKEY hKey;
-	LSTATUS result = RegOpenKeyExW(HKEY_CLASSES_ROOT, L"CLSID\\{FC5A7312-CFFE-4BF1-83E8-22D44C040568}\\", 0, KEY_READ, &hKey);
-
-	if (result != ERROR_SUCCESS)
-	{
-		return E_FAIL;
-	}
-
-	/*WCHAR dgb[8];
-	WCHAR theme[8];
-	size_t size1 = 8;
-	size_t size2 = 8;
-
-	LSTATUS l1 = RegGetValueW(hKey, L"DisplayGoButton", NULL, RRF_RT_REG_SZ, NULL, dgb, (LPDWORD)&size1);
-	LSTATUS l2 = RegGetValueW(hKey, L"Theme", NULL, RRF_RT_REG_SZ, NULL, theme, (LPDWORD)&size2);
-
-	if (wcscmp(dgb, L"0") == 0)
-		m_showGoButton = false;
-
-	if (wcscmp(theme, L"2K") == 0)
-	{
-		m_theme = CLASSIC_EXPLORER_2K;
-	}
-	else if (wcscmp(theme, L"XP") == 0)
-	{
-		m_theme = CLASSIC_EXPLORER_XP;
-	}
-	else if (wcscmp(theme, L"10") == 0)
-	{
-		m_theme = CLASSIC_EXPLORER_10;
-	}
-
-	RegCloseKey(hKey);*/
-
 	CEUtil::CESettings cS = CEUtil::GetCESettings();
 	m_showGoButton = cS.showGoButton;
 	m_theme = cS.theme;
