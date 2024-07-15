@@ -3,9 +3,9 @@
  *
  * This is used by ATL in order to perform registry operations when regsvr32 is called.
  *
- * This file is sent through the C preprocessor (by prebuild.cmd) for easier editing; the
- * standard way to write a file like this does not support constants or comments, because
- * these features are not supported during runtime.
+ * This file is sent through the C preprocessor (by the MSBuild custom build tool set on
+ * the file) for easier editing; the standard way to write a file like this does not
+ * support constants or comments, because these features are not supported during runtime.
  */
 
 #define PROG_ID                   ephemeralViolette.ClassicExplorer
