@@ -8,8 +8,8 @@
 #include "ClassicExplorer_i.h"
 #include "dllmain.h"
 #include <commoncontrols.h>
-#include "shell_helpers.h"
-#include "util.h"
+#include "util/shell_helpers.h"
+#include "util/util.h"
 
 #include "AddressBar.h"
 

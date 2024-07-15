@@ -73,6 +73,7 @@
     <LinkIncremental>true</LinkIncremental>
     <CustomBuildBeforeTargets>
     </CustomBuildBeforeTargets>
+    <ExtensionsToDeleteOnClean>*.generated.rgs;$(ExtensionsToDeleteOnClean)</ExtensionsToDeleteOnClean>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <IgnoreImportLibrary>true</IgnoreImportLibrary>
@@ -87,6 +88,7 @@
     <LinkIncremental>false</LinkIncremental>
     <CustomBuildBeforeTargets>
     </CustomBuildBeforeTargets>
+    <ExtensionsToDeleteOnClean>*.generated.rgs;$(ExtensionsToDeleteOnClean)</ExtensionsToDeleteOnClean>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
@@ -96,6 +98,7 @@
       <PreprocessorDefinitions>_WINDOWS;_DEBUG;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <SDLCheck>true</SDLCheck>
+      <AdditionalIncludeDirectories>$(ProjectDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Midl>
       <MkTypLibCompatible>false</MkTypLibCompatible>
@@ -194,6 +197,7 @@
       <PreprocessorDefinitions>_WINDOWS;NDEBUG;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <SDLCheck>true</SDLCheck>
+      <AdditionalIncludeDirectories>$(ProjectDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Midl>
       <MkTypLibCompatible>false</MkTypLibCompatible>
@@ -221,24 +225,24 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="AddressBar.h" />
-    <ClInclude Include="BrowserHelperObject.h" />
+    <ClInclude Include="AddressBar\AddressBar.h" />
+    <ClInclude Include="BrowserHelperObject\BrowserHelperObject.h" />
     <ClInclude Include="ClassicExplorer_i.h" />
     <ClInclude Include="dllmain.h" />
     <ClInclude Include="framework.h" />
     <ClInclude Include="resource.h" />
-    <ClInclude Include="shell_helpers.h" />
-    <ClInclude Include="shell_undoc.h" />
+    <ClInclude Include="util\shell_helpers.h" />
+    <ClInclude Include="util\shell_undoc.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
-    <ClInclude Include="ThrobberBand.h" />
-    <ClInclude Include="util.h" />
+    <ClInclude Include="Throbber\ThrobberBand.h" />
+    <ClInclude Include="util\util.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="AddressBar.cpp" />
-    <ClCompile Include="AddressBarHostBand.cpp" />
-    <ClCompile Include="AddressBarHostBand.h" />
-    <ClCompile Include="BrowserHelperObject.cpp" />
+    <ClCompile Include="AddressBar\AddressBar.cpp" />
+    <ClCompile Include="AddressBar\AddressBarHostBand.cpp" />
+    <ClCompile Include="AddressBar\AddressBarHostBand.h" />
+    <ClCompile Include="BrowserHelperObject\BrowserHelperObject.cpp" />
     <ClCompile Include="ClassicExplorer_i.c">
       <CompileAsManaged Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</CompileAsManaged>
       <CompileAsManaged Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</CompileAsManaged>
@@ -267,9 +271,9 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
       </PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="shell_helpers.cpp" />
-    <ClCompile Include="ThrobberBand.cpp" />
-    <ClCompile Include="util.cpp" />
+    <ClCompile Include="util\shell_helpers.cpp" />
+    <ClCompile Include="Throbber\ThrobberBand.cpp" />
+    <ClCompile Include="util\util.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="ClassicExplorer.rc" />

@@ -9,7 +9,7 @@
 #include "ClassicExplorer_i.h"
 #include "dllmain.h"
 #include <commoncontrols.h>
-#include "util.h"
+#include "util/util.h"
 
 #include "ThrobberBand.h"
 

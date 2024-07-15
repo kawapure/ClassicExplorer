@@ -49,25 +49,25 @@
     <ClInclude Include="stdafx.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="AddressBar.h">
+    <ClInclude Include="AddressBar\AddressBar.h">
       <Filter>Source Files\Address Bar</Filter>
     </ClInclude>
     <ClInclude Include="dllmain.h">
       <Filter>Source Files\Main</Filter>
     </ClInclude>
-    <ClInclude Include="shell_helpers.h">
+    <ClInclude Include="util\shell_helpers.h">
       <Filter>Source Files\Main</Filter>
     </ClInclude>
-    <ClInclude Include="util.h">
+    <ClInclude Include="util\util.h">
       <Filter>Source Files\Main</Filter>
     </ClInclude>
-    <ClInclude Include="ThrobberBand.h">
+    <ClInclude Include="Throbber\ThrobberBand.h">
       <Filter>Source Files\Throbber</Filter>
     </ClInclude>
-    <ClInclude Include="BrowserHelperObject.h">
+    <ClInclude Include="BrowserHelperObject\BrowserHelperObject.h">
       <Filter>Source Files\Browser Helper Object</Filter>
     </ClInclude>
-    <ClInclude Include="shell_undoc.h">
+    <ClInclude Include="util\shell_undoc.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -75,28 +75,28 @@
     <ClCompile Include="ClassicExplorer_i.c">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="AddressBar.cpp">
+    <ClCompile Include="AddressBar\AddressBar.cpp">
       <Filter>Source Files\Address Bar</Filter>
     </ClCompile>
-    <ClCompile Include="ThrobberBand.cpp">
+    <ClCompile Include="Throbber\ThrobberBand.cpp">
       <Filter>Source Files\Throbber</Filter>
     </ClCompile>
     <ClCompile Include="dllmain.cpp">
       <Filter>Source Files\Main</Filter>
     </ClCompile>
-    <ClCompile Include="util.cpp">
+    <ClCompile Include="util\util.cpp">
       <Filter>Source Files\Main</Filter>
     </ClCompile>
-    <ClCompile Include="shell_helpers.cpp">
+    <ClCompile Include="util\shell_helpers.cpp">
       <Filter>Source Files\Main</Filter>
     </ClCompile>
-    <ClCompile Include="AddressBarHostBand.cpp">
+    <ClCompile Include="AddressBar\AddressBarHostBand.cpp">
       <Filter>Source Files\Address Bar</Filter>
     </ClCompile>
-    <ClCompile Include="AddressBarHostBand.h">
+    <ClCompile Include="AddressBar\AddressBarHostBand.h">
       <Filter>Source Files\Address Bar</Filter>
     </ClCompile>
-    <ClCompile Include="BrowserHelperObject.cpp">
+    <ClCompile Include="BrowserHelperObject\BrowserHelperObject.cpp">
       <Filter>Source Files\Browser Helper Object</Filter>
     </ClCompile>
   </ItemGroup>

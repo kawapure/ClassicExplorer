@@ -8,7 +8,7 @@
 #include "resource.h"
 #include "ClassicExplorer_i.h"
 #include "dllmain.h"
-#include "util.h"
+#include "util/util.h"
 #include <string>
 
 class AddressBar : public CWindowImpl<AddressBar>
