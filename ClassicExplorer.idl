@@ -1,8 +1,10 @@
-// addressbar.idl : IDL source for addressbar
+// ClassicExplorer.idl : IDL source for ClassicExplorer
 //
 
 // This file will be processed by the MIDL tool to
 // produce the type library (addressbar.tlb) and marshalling code.
+
+// !!! Additions to the type library must be reflected in RegistryScript.rgs !!!
 
 import "oaidl.idl";
 import "ocidl.idl";
@@ -28,6 +30,16 @@ interface IAddressBarHostBand : IDispatch {};
 interface IThrobberBand : IDispatch {};
 
 [
+	object,
+	uuid(1D09EB49-083A-4679-A1D5-2F15CAD4D88F),
+	dual,
+	nonextensible,
+	helpstring("IBrowserHelperObject Interface"),
+	pointer_default(unique)
+]
+interface IBrowserHelperObject : IDispatch {};
+
+[
 	uuid(205F9779-62D5-4E06-8DAD-8E150FFA38DB),
 	version(1.0),
 ]
@@ -49,5 +61,13 @@ library AddressBarLib
 	coclass ThrobberBand
 	{
 		[default] interface IThrobberBand;
+	};
+
+	[
+		uuid(844CFA4E-7D74-4C80-B134-D214C9699F98)
+	]
+	coclass BrowserHelperObject
+	{
+		[default] interface IBrowserHelperObject;
 	};
 };

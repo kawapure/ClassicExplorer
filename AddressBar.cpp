@@ -9,6 +9,7 @@
 #include "dllmain.h"
 #include <commoncontrols.h>
 #include "shell_helpers.h"
+#include "util.h"
 
 #include "AddressBar.h"
 
@@ -738,30 +739,7 @@ HRESULT AddressBar::ExecuteCommandLine()
  */
 HRESULT AddressBar::GetCurrentFolderPidl(PIDLIST_ABSOLUTE *pidlOut)
 {
-	CComPtr<IShellView> pView;
-
-	if (m_pShellBrowser)
-	{
-		m_pShellBrowser->QueryActiveShellView(&pView);
-
-		if (pView)
-		{
-			CComQIPtr<IFolderView> pView2(pView);
-
-			if (pView2)
-			{
-				CComPtr<IPersistFolder2> pFolder;
-				pView2->GetFolder(IID_IPersistFolder2, (void **)&pFolder);
-
-				if (pFolder)
-				{
-					return pFolder->GetCurFolder(pidlOut); // should return S_OK
-				}
-			}
-		}
-	}
-
-	return E_FAIL;
+	return CEUtil::GetCurrentFolderPidl(m_pShellBrowser, pidlOut);
 }
 
 /*

@@ -29,6 +29,9 @@
     <Filter Include="Source Files\Main">
       <UniqueIdentifier>{74770404-dddc-4d3b-9511-78e68b3e77c9}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\Browser Helper Object">
+      <UniqueIdentifier>{6a1ba487-fbae-4c5e-9041-e71c599adfac}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -61,6 +64,12 @@
     <ClInclude Include="ThrobberBand.h">
       <Filter>Source Files\Throbber</Filter>
     </ClInclude>
+    <ClInclude Include="BrowserHelperObject.h">
+      <Filter>Source Files\Browser Helper Object</Filter>
+    </ClInclude>
+    <ClInclude Include="shell_undoc.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ClassicExplorer_i.c">
@@ -87,6 +96,9 @@
     <ClCompile Include="AddressBarHostBand.h">
       <Filter>Source Files\Address Bar</Filter>
     </ClCompile>
+    <ClCompile Include="BrowserHelperObject.cpp">
+      <Filter>Source Files\Browser Helper Object</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="ClassicExplorer.rc">
@@ -94,11 +106,11 @@
     </ResourceCompile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="ClassicExplorer.rgs">
-      <Filter>Resource Files</Filter>
-    </None>
     <None Include="ClassicExplorer.def">
       <Filter>Source Files\Main</Filter>
+    </None>
+    <None Include="regscript.generated.rgs">
+      <Filter>Generated Files</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>
@@ -152,5 +164,22 @@
     <Image Include="DefaultResources\xp_throbber_s2.bmp">
       <Filter>Resource Files\Default Resources</Filter>
     </Image>
+    <Image Include="DefaultResources\bg_videos_blue.bmp">
+      <Filter>Resource Files\Default Resources</Filter>
+    </Image>
+    <Image Include="DefaultResources\bg_music_blue.bmp">
+      <Filter>Resource Files\Default Resources</Filter>
+    </Image>
+    <Image Include="DefaultResources\bg_pictures_blue.bmp">
+      <Filter>Resource Files\Default Resources</Filter>
+    </Image>
+    <Image Include="DefaultResources\bg_search_blue.bmp">
+      <Filter>Resource Files\Default Resources</Filter>
+    </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="RegistryScript.rgs">
+      <Filter>Resource Files</Filter>
+    </CustomBuild>
   </ItemGroup>
 </Project>

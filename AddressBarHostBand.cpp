@@ -27,7 +27,7 @@ std::wstring AddressBarHostBand::m_addressText = L"";
 // implement IDeskBand:
 //
 
-char AddressBarHostBand::GetAddressAccelerator()
+WCHAR AddressBarHostBand::GetAddressAccelerator()
 {
 	for (int i = 0; i < m_addressText.length(); i++)
 	{
@@ -35,7 +35,7 @@ char AddressBarHostBand::GetAddressAccelerator()
 			break;
 
 		if (m_addressText[i - 1] == L'&')
-			return (char)m_addressText[i];
+			return m_addressText[i];
 	}
 
 	return L'\0';
@@ -231,7 +231,7 @@ STDMETHODIMP AddressBarHostBand::SetSite(IUnknown *pUnkSite)
 }
 
 //================================================================================================================
-// implement DWebBrowserEvents2:
+// handle DWebBrowserEvents2:
 //
 
 STDMETHODIMP AddressBarHostBand::OnNavigateComplete(IDispatch *pDisp, VARIANT *url)
@@ -285,13 +285,13 @@ STDMETHODIMP AddressBarHostBand::TranslateAcceleratorIO(MSG *pMsg)
 	{
 		case WM_SYSCHAR:
 		{
-			char szInput[2] = "\0";
+			WCHAR szInput[2] = L"\0";
 			szInput[0] = (char)pMsg->wParam;
 
-			char szAccelerator[2] = "\0";
+			WCHAR szAccelerator[2] = L"\0";
 			szAccelerator[0] = GetAddressAccelerator();
 
-			if (lstrcmpiA(szInput, szAccelerator) == 0)
+			if (lstrcmpiW(szInput, szAccelerator) == 0)
 			{
 				//MessageBoxW(NULL, L"FUCK", L"KILL YOURSELF", MB_OK);
 				::SetFocus(m_addressBar.m_comboBoxEditCtl);

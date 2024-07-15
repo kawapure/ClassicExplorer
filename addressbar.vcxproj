@@ -71,6 +71,8 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <IgnoreImportLibrary>true</IgnoreImportLibrary>
     <LinkIncremental>true</LinkIncremental>
+    <CustomBuildBeforeTargets>
+    </CustomBuildBeforeTargets>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <IgnoreImportLibrary>true</IgnoreImportLibrary>
@@ -83,6 +85,8 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <IgnoreImportLibrary>true</IgnoreImportLibrary>
     <LinkIncremental>false</LinkIncremental>
+    <CustomBuildBeforeTargets>
+    </CustomBuildBeforeTargets>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
@@ -218,11 +222,13 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="AddressBar.h" />
+    <ClInclude Include="BrowserHelperObject.h" />
     <ClInclude Include="ClassicExplorer_i.h" />
     <ClInclude Include="dllmain.h" />
     <ClInclude Include="framework.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="shell_helpers.h" />
+    <ClInclude Include="shell_undoc.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
     <ClInclude Include="ThrobberBand.h" />
@@ -232,6 +238,7 @@
     <ClCompile Include="AddressBar.cpp" />
     <ClCompile Include="AddressBarHostBand.cpp" />
     <ClCompile Include="AddressBarHostBand.h" />
+    <ClCompile Include="BrowserHelperObject.cpp" />
     <ClCompile Include="ClassicExplorer_i.c">
       <CompileAsManaged Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</CompileAsManaged>
       <CompileAsManaged Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</CompileAsManaged>
@@ -269,7 +276,22 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="ClassicExplorer.def" />
-    <None Include="ClassicExplorer.rgs" />
+    <CustomBuild Include="RegistryScript.rgs">
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">cl /nologo /EP %(Identity) &gt; regscript.generated.rgs</Command>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Building registry script from %(Identity)...</Message>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">regscript.generated.rgs</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">cl /nologo /EP %(Identity) &gt; regscript.generated.rgs</Command>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Building registry script from %(Identity)...</Message>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">regscript.generated.rgs</Outputs>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
+      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</DeploymentContent>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
+      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</DeploymentContent>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</LinkObjects>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</LinkObjects>
+      <CustomBuildBeforeTargets>Build</CustomBuildBeforeTargets>
+    </CustomBuild>
+    <None Include="regscript.generated.rgs" />
   </ItemGroup>
   <ItemGroup>
     <Midl Include="ClassicExplorer.idl">
@@ -294,6 +316,10 @@
     <Image Include="DefaultResources\2k_throbber_s0.bmp" />
     <Image Include="DefaultResources\2k_throbber_s1.bmp" />
     <Image Include="DefaultResources\2k_throbber_s2.bmp" />
+    <Image Include="DefaultResources\bg_music_blue.bmp" />
+    <Image Include="DefaultResources\bg_pictures_blue.bmp" />
+    <Image Include="DefaultResources\bg_search_blue.bmp" />
+    <Image Include="DefaultResources\bg_videos_blue.bmp" />
     <Image Include="DefaultResources\xp_go_active.bmp" />
     <Image Include="DefaultResources\xp_go_inactive.bmp" />
     <Image Include="DefaultResources\xp_throbber_s0.bmp" />

@@ -19,7 +19,6 @@ class ATL_NO_VTABLE AddressBarHostBand :
 	public IInputObject,
 	public IInputObjectSite
 {
-	char GetAddressAccelerator();
 	protected: // Class members:
 		IInputObjectSite *m_pSite = NULL;
 		HWND m_parentWindow = NULL;
@@ -28,6 +27,9 @@ class ATL_NO_VTABLE AddressBarHostBand :
 		static std::wstring m_addressText;
 
 		friend class AddressBar;
+
+	protected: // Internal methods:
+		WCHAR GetAddressAccelerator();
 
 	public: // COM class setup:
 		DECLARE_REGISTRY_RESOURCEID_V2_WITHOUT_MODULE(IDR_CLASSICEXPLORER, AddressBarHostBand)
@@ -71,7 +73,7 @@ class ATL_NO_VTABLE AddressBarHostBand :
 		STDMETHOD(ResizeBorderDW)(const RECT *pRcBorder, IUnknown *pUnkToolbarSite, BOOL fReserved);
 		STDMETHOD(ShowDW)(BOOL fShow);
 
-		// implement DWebBrowserEvents2:
+		// handle DWebBrowserEvents2:
 		STDMETHOD(OnNavigateComplete)(IDispatch *pDisp, VARIANT *url);
 		STDMETHOD(OnQuit)(void);
 

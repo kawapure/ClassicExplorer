@@ -1,0 +1,129 @@
+/*
+ * RegistryScript.rgs: Used for generating the registry script for client-side ATL use.
+ *
+ * This is used by ATL in order to perform registry operations when regsvr32 is called.
+ *
+ * This file is sent through the C preprocessor (by prebuild.cmd) for easier editing; the
+ * standard way to write a file like this does not support constants or comments, because
+ * these features are not supported during runtime.
+ */
+
+#define PROG_ID                   ephemeralViolette.ClassicExplorer
+
+// ## means concatenation, so the following part will be added to the end.
+#define PROG_ID_WITH_VERSION      PROG_ID##.1
+
+#define CLSID_AddressBarHostBand  {FC5A7312-CFFE-4BF1-83E8-22D44C040568} 
+#define CLSID_ThrobberBand        {9F7E1105-EB11-4A41-857A-F7E1494D3818}
+#define CLSID_BrowserHelperObject {844CFA4E-7D74-4C80-B134-D214C9699F98}
+
+#define TYPELIB_ClassicExplorer   {205F9779-62D5-4E06-8DAD-8E150FFA38DB}
+
+HKCR
+{
+	// ------------------------------------------------------------------------------------------
+	// Program ID registration
+	//
+	PROG_ID_WITH_VERSION = s 'Classic Explorer v1 Class'
+	{
+		CLSID = s CLSID_AddressBarHostBand
+	}
+
+	PROG_ID = s 'Classic Explorer Class'
+	{
+		CLSID = s CLSID_AddressBarHostBand
+		CurVer = s PROG_ID_WITH_VERSION
+	}
+
+	// ------------------------------------------------------------------------------------------
+	// Global Class ID registration:
+	//
+	NoRemove CLSID
+	{
+		ForceRemove CLSID_AddressBarHostBand = s 'Classic Address Bar'
+		{
+			ProgID = s PROG_ID_WITH_VERSION
+			VersionIndependentProgID = s PROG_ID
+			ForceRemove 'Programmable'
+			InprocServer32 = s '%MODULE%' // %MODULE% is a constant for the ATL parser (runtime).
+			{
+				val ThreadingModel = s 'Apartment'
+			}
+			'TypeLib' = s TYPELIB_ClassicExplorer
+		}
+
+		ForceRemove CLSID_ThrobberBand = s 'Throbber'
+		{
+			ProgID = s PROG_ID_WITH_VERSION
+			VersionIndependentProgID = s PROG_ID
+			ForceRemove 'Programmable'
+			InprocServer32 = s '%MODULE%'
+			{
+				val ThreadingModel = s 'Apartment'
+			}
+			'TypeLib' = s TYPELIB_ClassicExplorer
+		}
+
+		ForceRemove CLSID_BrowserHelperObject = s 'ClassicExplorer BHO'
+		{
+			ProgID = s PROG_ID_WITH_VERSION
+			VersionIndependentProgID = s PROG_ID
+			ForceRemove 'Programmable'
+			InprocServer32 = s '%MODULE%'
+			{
+				val ThreadingModel = s 'Apartment'
+			}
+			'TypeLib' = s TYPELIB_ClassicExplorer
+		}
+	}
+}
+
+HKLM
+{
+	NoRemove Software
+	{
+		NoRemove Microsoft
+		{
+			NoRemove 'Internet Explorer'
+			{
+				// ------------------------------------------------------------------------------
+				// Shell toolbar registration:
+				//
+				NoRemove Toolbar
+				{
+					ForceRemove val CLSID_AddressBarHostBand = b ''
+					ForceRemove val CLSID_ThrobberBand = b ''
+				}
+			}
+			NoRemove Windows
+			{
+				NoRemove CurrentVersion
+				{
+					NoRemove Policies
+					{
+						NoRemove Ext
+						{
+							NoRemove CLSID
+							{
+								// Toolbar policies
+								ForceRemove val CLSID_AddressBarHostBand = s '2'
+								ForceRemove val CLSID_ThrobberBand = s '2'
+							}
+						}
+					}
+
+					NoRemove Explorer
+					{
+						// ----------------------------------------------------------------------
+						// Browser Helper Object registration:
+						//
+						NoRemove 'Browser Helper Objects'
+						{
+							ForceRemove CLSID_BrowserHelperObject
+						}
+					}
+				}
+			}
+		}
+	}
+}

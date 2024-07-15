@@ -596,7 +596,7 @@ STDMETHODIMP ThrobberBand::SetSite(IUnknown *pUnkSite)
 }
 
 //================================================================================================================
-// implement DWebBrowserEvents2:
+// handle DWebBrowserEvents2:
 //
 STDMETHODIMP ThrobberBand::OnNavigateComplete(IDispatch *pDisp, VARIANT *url)
 {

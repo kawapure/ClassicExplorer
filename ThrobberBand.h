@@ -111,7 +111,7 @@ class ATL_NO_VTABLE ThrobberBand :
 		STDMETHOD(ResizeBorderDW)(const RECT *pRcBorder, IUnknown *pUnkToolbarSite, BOOL fReserved);
 		STDMETHOD(ShowDW)(BOOL fShow);
 
-		// implement DWebBrowserEvents2:
+		// handle DWebBrowserEvents2:
 		STDMETHOD(OnNavigateComplete)(IDispatch *pDisp, VARIANT *url);
 		STDMETHOD(OnQuit)(void);
 };

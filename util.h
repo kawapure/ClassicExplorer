@@ -33,6 +33,7 @@ namespace CEUtil
 	};
 	CESettings GetCESettings();
 	void WriteCESettings(CESettings& toWrite);
+	HRESULT GetCurrentFolderPidl(CComPtr<IShellBrowser> pShellBrowser, PIDLIST_ABSOLUTE *pidlOut);
 	HRESULT FixExplorerSizes(HWND explorerChild);
 	HRESULT FixExplorerSizesIfNecessary(HWND explorerChild);
 }

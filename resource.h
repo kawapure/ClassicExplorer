@@ -20,6 +20,11 @@
 #define IDB_10_THROBBER_SIZE_SMALL      403
 #define IDB_10_THROBBER_SIZE_MID        404
 #define IDB_10_THROBBER_SIZE_LARGE      405
+#define IDB_BG_MUSIC_BLUE               214
+#define IDB_BG_PICTURES_BLUE            215
+#define IDB_BG_SEARCH_BLUE              216
+#define IDB_BITMAP5                     217
+#define IDB_BG_VIDEOS_BLUE              217
 
 // Next default values for new objects
 // 
