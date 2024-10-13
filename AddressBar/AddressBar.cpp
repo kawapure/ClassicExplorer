@@ -425,16 +425,26 @@ HRESULT AddressBar::RefreshCurrentAddress()
 	// If the check if it's a known folder failed, then the path must be physical:
 	if (FAILED(isKnownFolder))
 	{
-		BOOL hasPath = SUCCEEDED(
-			ShellHelpers::GetLocalizedDisplayPath(
-				m_currentPath, 
-				m_displayName, 
-				ARRAYSIZE(m_displayName)
-			)
-		);
+		if (CEUtil::GetCESettings().showFullAddress)
+		{
+			BOOL hasPath = SUCCEEDED(
+				ShellHelpers::GetLocalizedDisplayPath(
+					m_currentPath,
+					m_displayName,
+					ARRAYSIZE(m_displayName)
+				)
+			);
 
-		// In the case this fails, just put the display name of the folder in its place.
-		if (!m_locationHasPhysicalPath)
+			// In the case this fails, just put the display name of the folder in its place.
+			if (!m_locationHasPhysicalPath)
+			{
+				hr = GetCurrentFolderName(m_displayName, ARRAYSIZE(m_displayName));
+
+				if (hr != S_OK)
+					return hr;
+			}
+		}
+		else
 		{
 			hr = GetCurrentFolderName(m_displayName, ARRAYSIZE(m_displayName));
 
@@ -775,7 +785,7 @@ HRESULT AddressBar::GetCurrentFolderName(WCHAR *pszName, long length)
 	STRRET ret;
 	hr = pShellFolder->GetDisplayNameOf(
 		pidlChild,
-		SHGDN_FORADDRESSBAR | SHGDN_FORPARSING,
+		CEUtil::GetCESettings().showFullAddress ? SHGDN_FORADDRESSBAR | SHGDN_FORPARSING : 0,
 		&ret
 	);
 

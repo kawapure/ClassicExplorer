@@ -35,23 +35,6 @@ LRESULT ThrobberBand::OnPaint(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL &bHa
 	destinationPoint.x = (clientRect.right - clientRect.left - m_cxCurBmp) / 2;
 	destinationPoint.y = (clientRect.bottom - clientRect.top - m_cyCurBmp) / 2;
 
-	/*static COLORREF background = RGB(255, 0, 0);
-	if(background == RGB(255, 0, 0))
-	{
-		switch (g_theme)
-		{
-		case CLASSIC_EXPLORER_10:
-		case CLASSIC_EXPLORER_XP:
-			background = RGB(255, 255, 255);
-			break;
-		case CLASSIC_EXPLORER_2K:
-			background = RGB(0, 0, 0);
-			break;
-		default:
-			background = RGB(255, 0, 0);
-			break;
-		}
-	}*/
 	COLORREF background = m_theme == CLASSIC_EXPLORER_2K ? RGB(0, 0, 0) : RGB(255, 255, 255);
 
 	SetBkColor(dc, background);
@@ -116,6 +99,7 @@ LRESULT ThrobberBand::OnClick(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHa
 
 	AppendMenuW(hMenu, (currentSettings.showGoButton ? MF_CHECKED : MF_UNCHECKED) | MF_STRING, 7010, L"Show Go button");
 	AppendMenuW(hMenu, (currentSettings.showAddressLabel ? MF_CHECKED : MF_UNCHECKED) | MF_STRING, 7011, L"Show Address label");
+	AppendMenuW(hMenu, (currentSettings.showFullAddress ? MF_CHECKED : MF_UNCHECKED) | MF_STRING, 7012, L"Show full address");
 
 	POINT p;
 	p.x = GET_X_LPARAM(lParam);
@@ -132,19 +116,22 @@ LRESULT ThrobberBand::OnClick(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHa
 	switch (sel)
 	{
 	case 7000:
-		CEUtil::WriteCESettings(CEUtil::CESettings(CLASSIC_EXPLORER_2K, -1, -1));
+		CEUtil::WriteCESettings(CEUtil::CESettings(CLASSIC_EXPLORER_2K, -1, -1,-1));
 		break;
 	case 7001:
-		CEUtil::WriteCESettings(CEUtil::CESettings(CLASSIC_EXPLORER_XP, -1, -1));
+		CEUtil::WriteCESettings(CEUtil::CESettings(CLASSIC_EXPLORER_XP, -1, -1,-1));
 		break;
 	case 7002:
-		CEUtil::WriteCESettings(CEUtil::CESettings(CLASSIC_EXPLORER_10, -1, -1));
+		CEUtil::WriteCESettings(CEUtil::CESettings(CLASSIC_EXPLORER_10, -1, -1,-1));
 		break;
 	case 7010:
-		CEUtil::WriteCESettings(CEUtil::CESettings(CLASSIC_EXPLORER_NONE, !currentSettings.showGoButton, -1));
+		CEUtil::WriteCESettings(CEUtil::CESettings(CLASSIC_EXPLORER_NONE, !currentSettings.showGoButton, -1, -1));
 		break;
 	case 7011:
-		CEUtil::WriteCESettings(CEUtil::CESettings(CLASSIC_EXPLORER_NONE, -1, !currentSettings.showAddressLabel));
+		CEUtil::WriteCESettings(CEUtil::CESettings(CLASSIC_EXPLORER_NONE, -1, !currentSettings.showAddressLabel, -1));
+		break;
+	case 7012:
+		CEUtil::WriteCESettings(CEUtil::CESettings(CLASSIC_EXPLORER_NONE, -1, -1, !currentSettings.showFullAddress));
 		break;
 	}
 	MessageBeep(0);
