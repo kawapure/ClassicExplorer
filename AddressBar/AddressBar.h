@@ -78,6 +78,7 @@ class AddressBar : public CWindowImpl<AddressBar>
 
 		HRESULT GetCurrentFolderPidl(PIDLIST_ABSOLUTE *pidl);
 		HRESULT GetCurrentFolderName(WCHAR *pszName, long length);
+		LRESULT GetBooleanRegKey(PTCHAR key, bool* boolValue);
 
 		HRESULT ParseAddress(PIDLIST_RELATIVE *pidlOut);
 		HRESULT ExecuteCommandLine();

@@ -12,6 +12,7 @@
 #include "util/util.h"
 
 #include "AddressBar.h"
+#include "winreg.h"
 
 std::wstring AddressBar::m_goText = L"";
 
@@ -127,7 +128,12 @@ LRESULT AddressBar::CreateGoButton()
 	int go_inactive_bitmap = IDB_10_GO_INACTIVE;
 	int go_active_bitmap = IDB_10_GO_ACTIVE;
 
-	if (m_theme == CLASSIC_EXPLORER_2K)
+	if (m_theme == CLASSIC_EXPLORER_MEMPHIS)
+	{
+		go_inactive_bitmap = IDB_MEMPHIS_GO_INACTIVE;
+		go_active_bitmap = IDB_MEMPHIS_GO_ACTIVE;
+	}
+	else if (m_theme == CLASSIC_EXPLORER_2K)
 	{
 		go_inactive_bitmap = IDB_2K_GO_INACTIVE;
 		go_active_bitmap = IDB_2K_GO_ACTIVE;
@@ -141,7 +147,7 @@ LRESULT AddressBar::CreateGoButton()
 	m_himlGoInactive = ImageList_LoadImageW(
 		resourceInstance,
 		MAKEINTRESOURCEW(go_inactive_bitmap),
-		20,
+		m_theme == CLASSIC_EXPLORER_MEMPHIS ? 18 : 20,
 		0,
 		RGB(0, 0, 0),
 		IMAGE_BITMAP,
@@ -151,7 +157,7 @@ LRESULT AddressBar::CreateGoButton()
 	m_himlGoActive = ImageList_LoadImageW(
 		resourceInstance,
 		MAKEINTRESOURCEW(go_active_bitmap),
-		20,
+		m_theme == CLASSIC_EXPLORER_MEMPHIS ? 18 : 20,
 		0,
 		RGB(0, 0, 0),
 		IMAGE_BITMAP,
@@ -164,7 +170,10 @@ LRESULT AddressBar::CreateGoButton()
 		NULL,
 		WS_CHILD | WS_CLIPSIBLINGS | WS_CLIPCHILDREN | TBSTYLE_LIST | TBSTYLE_FLAT | TBSTYLE_TOOLTIPS |
 		CCS_NODIVIDER | CCS_NOPARENTALIGN | CCS_NORESIZE,
-		0, 0, 50, 50,
+		0,
+		0,
+		50,
+		50,
 		m_toolbar,
 		NULL,
 		moduleInstance,

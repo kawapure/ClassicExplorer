@@ -5,7 +5,7 @@
 #include "stdafx.h"
 #include "framework.h"
 #include "resource.h"
-#include "ClassicExplorer_i.h"
+//#include "ClassicExplorer_i.h"
 #include "dllmain.h"
 
 enum ClassicExplorerTheme
@@ -13,7 +13,8 @@ enum ClassicExplorerTheme
 	CLASSIC_EXPLORER_NONE = -1,
 	CLASSIC_EXPLORER_2K = 0,
 	CLASSIC_EXPLORER_XP = 1,
-	CLASSIC_EXPLORER_10 = 2
+	CLASSIC_EXPLORER_10 = 2,
+	CLASSIC_EXPLORER_MEMPHIS = 3
 };
 
 namespace CEUtil
