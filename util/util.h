@@ -23,12 +23,14 @@ namespace CEUtil
 		ClassicExplorerTheme theme = CLASSIC_EXPLORER_NONE;
 		DWORD showGoButton = -1;
 		DWORD showAddressLabel = -1;
+		DWORD showFullAddress = -1;
 
-		CESettings(ClassicExplorerTheme t, int a, int b)
+		CESettings(ClassicExplorerTheme t, int a, int b, int f)
 		{
 			theme = t;
 			showGoButton = a;
 			showAddressLabel = b;
+			showFullAddress = f;
 		}
 	};
 	CESettings GetCESettings();
