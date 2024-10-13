@@ -37,7 +37,7 @@ LRESULT ThrobberBand::OnPaint(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL &bHa
 
 	//COLORREF background = m_theme == CLASSIC_EXPLORER_2K ? RGB(0, 0, 0) : RGB(255, 255, 255);
 	COLORREF background;
-	if (m_theme == CLASSIC_EXPLORER_2K || CLASSIC_EXPLORER_MEMPHIS)
+	if (m_theme == CLASSIC_EXPLORER_2K || m_theme == CLASSIC_EXPLORER_MEMPHIS)
 	{
 		background = RGB(0, 0, 0);
 	}
