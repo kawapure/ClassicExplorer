@@ -324,6 +324,11 @@
     <Image Include="DefaultResources\bg_pictures_blue.bmp" />
     <Image Include="DefaultResources\bg_search_blue.bmp" />
     <Image Include="DefaultResources\bg_videos_blue.bmp" />
+    <Image Include="DefaultResources\memphis\go_active.bmp" />
+    <Image Include="DefaultResources\memphis\go_inactive.bmp" />
+    <Image Include="DefaultResources\memphis\throbber_s0.bmp" />
+    <Image Include="DefaultResources\memphis\throbber_s1.bmp" />
+    <Image Include="DefaultResources\memphis\throbber_s2.bmp" />
     <Image Include="DefaultResources\xp_go_active.bmp" />
     <Image Include="DefaultResources\xp_go_inactive.bmp" />
     <Image Include="DefaultResources\xp_throbber_s0.bmp" />

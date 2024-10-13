@@ -36,12 +36,19 @@ CESettings GetCESettings()
 		return CESettings(CLASSIC_EXPLORER_2K, 1, 1,1);
 	}
 	// Read settings
-	WCHAR themeRead[8];
-	DWORD size = 8;
+	//WCHAR themeRead[8];
+	WCHAR themeRead[9];
+	//DWORD size = 8;
+	DWORD size = sizeof(themeRead);
+
 	RegGetValueW(hKey, NULL, L"Theme", RRF_RT_REG_SZ, NULL, themeRead, &size);
 	if (wcscmp(themeRead, L"XP") == 0)
 	{
 		theme = CLASSIC_EXPLORER_XP;
+	}
+	else if (wcscmp(themeRead, L"98") == 0)
+	{
+		theme = CLASSIC_EXPLORER_MEMPHIS;
 	}
 	else if (wcscmp(themeRead, L"10") == 0)
 	{
@@ -77,6 +84,8 @@ void WriteCESettings(CESettings& toWrite)
 		WCHAR theme[] = L"2K";
 		if (toWrite.theme == CLASSIC_EXPLORER_XP)
 			wcscpy_s(theme, L"XP");
+		if (toWrite.theme == CLASSIC_EXPLORER_MEMPHIS)
+			wcscpy_s(theme, L"98");
 		if (toWrite.theme == CLASSIC_EXPLORER_10)
 			wcscpy_s(theme, L"10");
 		RegSetValueExW(hKey, L"Theme", 0, REG_SZ, (BYTE*)theme, 4);

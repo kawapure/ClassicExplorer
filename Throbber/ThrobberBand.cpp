@@ -35,7 +35,14 @@ LRESULT ThrobberBand::OnPaint(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL &bHa
 	destinationPoint.x = (clientRect.right - clientRect.left - m_cxCurBmp) / 2;
 	destinationPoint.y = (clientRect.bottom - clientRect.top - m_cyCurBmp) / 2;
 
-	COLORREF background = m_theme == CLASSIC_EXPLORER_2K ? RGB(0, 0, 0) : RGB(255, 255, 255);
+	//COLORREF background = m_theme == CLASSIC_EXPLORER_2K ? RGB(0, 0, 0) : RGB(255, 255, 255);
+	COLORREF background;
+	if (m_theme == CLASSIC_EXPLORER_2K || CLASSIC_EXPLORER_MEMPHIS)
+	{
+		background = RGB(0, 0, 0);
+	}
+	else
+		background = RGB(255, 255, 255);
 
 	SetBkColor(dc, background);
 
@@ -91,9 +98,11 @@ LRESULT ThrobberBand::OnClick(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHa
 
 	HMENU hMenu = CreatePopupMenu();
 
+	AppendMenuW(hMenu, (m_theme == CLASSIC_EXPLORER_MEMPHIS ? MF_CHECKED : MF_UNCHECKED) | MF_STRING, m_theme == CLASSIC_EXPLORER_MEMPHIS ? 0 : 7003, L"Memphis Skin");
 	AppendMenuW(hMenu, (m_theme == CLASSIC_EXPLORER_2K ? MF_CHECKED : MF_UNCHECKED) | MF_STRING, m_theme == CLASSIC_EXPLORER_2K ? 0 : 7000, L"2K Skin");
 	AppendMenuW(hMenu, (m_theme == CLASSIC_EXPLORER_XP ? MF_CHECKED : MF_UNCHECKED) | MF_STRING, m_theme == CLASSIC_EXPLORER_XP ? 0 : 7001, L"XP Skin");
 	AppendMenuW(hMenu, (m_theme == CLASSIC_EXPLORER_10 ? MF_CHECKED : MF_UNCHECKED) | MF_STRING, m_theme == CLASSIC_EXPLORER_10 ? 0 : 7002, L"10 Skin");
+
 
 	AppendMenuW(hMenu, MF_SEPARATOR, 0, 0);
 
@@ -123,6 +132,9 @@ LRESULT ThrobberBand::OnClick(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHa
 		break;
 	case 7002:
 		CEUtil::WriteCESettings(CEUtil::CESettings(CLASSIC_EXPLORER_10, -1, -1,-1));
+		break;
+	case 7003:
+		CEUtil::WriteCESettings(CEUtil::CESettings(CLASSIC_EXPLORER_MEMPHIS, -1, -1, -1));
 		break;
 	case 7010:
 		CEUtil::WriteCESettings(CEUtil::CESettings(CLASSIC_EXPLORER_NONE, !currentSettings.showGoButton, -1, -1));
@@ -163,6 +175,9 @@ LRESULT ThrobberBand::LoadBitmapForSize()
 		case CLASSIC_EXPLORER_2K:
 			resourceId = IDB_2K_THROBBER_SIZE_LARGE;
 			break;
+		case CLASSIC_EXPLORER_MEMPHIS:
+			resourceId = IDB_MEMPHIS_THROBBER_SIZE_LARGE;
+			break;
 		case CLASSIC_EXPLORER_XP:
 			resourceId = IDB_XP_THROBBER_SIZE_LARGE;
 			break;
@@ -179,6 +194,9 @@ LRESULT ThrobberBand::LoadBitmapForSize()
 		case CLASSIC_EXPLORER_2K:
 			resourceId = IDB_2K_THROBBER_SIZE_MID;
 			break;
+		case CLASSIC_EXPLORER_MEMPHIS:
+			resourceId = IDB_MEMPHIS_THROBBER_SIZE_MID;
+			break;
 		case CLASSIC_EXPLORER_XP:
 			resourceId = IDB_XP_THROBBER_SIZE_MID;
 			break;
@@ -194,6 +212,9 @@ LRESULT ThrobberBand::LoadBitmapForSize()
 			break;
 		case CLASSIC_EXPLORER_2K:
 			resourceId = IDB_2K_THROBBER_SIZE_SMALL;
+			break;
+		case CLASSIC_EXPLORER_MEMPHIS:
+			resourceId = IDB_MEMPHIS_THROBBER_SIZE_SMALL;
 			break;
 		case CLASSIC_EXPLORER_XP:
 			resourceId = IDB_XP_THROBBER_SIZE_SMALL;
