@@ -8,7 +8,7 @@
  * support constants or comments, because these features are not supported during runtime.
  */
 
-#define PROG_ID                   ephemeralViolette.ClassicExplorer
+#define PROG_ID                   kawapure.ClassicExplorer
 
 // ## means concatenation, so the following part will be added to the end.
 #define PROG_ID_WITH_VERSION      PROG_ID##.1

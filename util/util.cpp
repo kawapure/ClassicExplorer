@@ -9,30 +9,33 @@
 namespace CEUtil
 {
 
+#define CE_REGISTRY_PATH L"SOFTWARE\\kawapure\\ClassicExplorer"
+
 CESettings GetCESettings()
 {
-	DWORD showGoButton = 1;
-	DWORD showAddressLabel = 1;
-	DWORD showFullAddress = 1;
+	bool fShowGoButton = true;
+	bool fShowAddressLabel = true;
+	bool fShowFullAddress = true;
+
 	ClassicExplorerTheme theme = CLASSIC_EXPLORER_2K;
 	HKEY hKey;
-	LSTATUS ls = RegOpenKeyExW(HKEY_CURRENT_USER, L"SOFTWARE\\ClassicExplorer\\AddressAndThrobber", 0, KEY_READ, &hKey);
+	LSTATUS ls = RegOpenKeyExW(HKEY_CURRENT_USER, CE_REGISTRY_PATH, 0, KEY_READ, &hKey);
 	if (ls != ERROR_SUCCESS)
 	{
 		// Key doesn't exist, make it
-		ls = RegCreateKeyW(HKEY_CURRENT_USER, L"SOFTWARE\\ClassicExplorer\\AddressAndThrobber", &hKey);
+		ls = RegCreateKeyW(HKEY_CURRENT_USER, CE_REGISTRY_PATH, &hKey);
 		if (ls != ERROR_SUCCESS) // sum ting wong
 			return CESettings(CLASSIC_EXPLORER_NONE, -1, -1,-1);
 
 		// Open the new key with write access
-		RegOpenKeyExW(HKEY_CURRENT_USER, L"SOFTWARE\\ClassicExplorer\\AddressAndThrobber", 0, KEY_WRITE, &hKey);
+		RegOpenKeyExW(HKEY_CURRENT_USER, CE_REGISTRY_PATH, 0, KEY_WRITE, &hKey);
 
 		// Write default values and return default settings
 		WCHAR themeDef[] = L"2K";
 		RegSetValueExW(hKey, L"Theme", 0, REG_SZ, (BYTE*)themeDef, 4);
-		RegSetValueExW(hKey, L"ShowGoButton", 0, REG_DWORD, (BYTE*)&showGoButton, 4);
-		RegSetValueExW(hKey, L"ShowAddressLabel", 0, REG_DWORD, (BYTE*)&showAddressLabel, 4);
-		RegSetValueExW(hKey, L"ShowFullAddress", 0, REG_DWORD, (BYTE*)&showFullAddress, 4);
+		RegSetValueExW(hKey, L"ShowGoButton", 0, REG_DWORD, (BYTE*)&fShowGoButton, 4);
+		RegSetValueExW(hKey, L"ShowAddressLabel", 0, REG_DWORD, (BYTE*)&fShowAddressLabel, 4);
+		RegSetValueExW(hKey, L"ShowFullAddress", 0, REG_DWORD, (BYTE*)&fShowFullAddress, 4);
 		return CESettings(CLASSIC_EXPLORER_2K, 1, 1,1);
 	}
 	// Read settings
@@ -56,28 +59,28 @@ CESettings GetCESettings()
 	}
 	
 	DWORD dwValueSize = sizeof(DWORD);
-	RegGetValueW(hKey, NULL, L"ShowGoButton", RRF_RT_REG_DWORD, NULL, &showGoButton, &dwValueSize);
-	RegGetValueW(hKey, NULL, L"ShowAddressLabel", RRF_RT_REG_DWORD, NULL, &showAddressLabel, &dwValueSize);
-	RegGetValueW(hKey, NULL, L"ShowFullAddress", RRF_RT_REG_DWORD, NULL, &showFullAddress, &dwValueSize);
+	RegGetValueW(hKey, NULL, L"ShowGoButton", RRF_RT_REG_DWORD, NULL, &fShowGoButton, &dwValueSize);
+	RegGetValueW(hKey, NULL, L"ShowAddressLabel", RRF_RT_REG_DWORD, NULL, &fShowAddressLabel, &dwValueSize);
+	RegGetValueW(hKey, NULL, L"ShowFullAddress", RRF_RT_REG_DWORD, NULL, &fShowFullAddress, &dwValueSize);
 
 	RegCloseKey(hKey);
 
-	return CESettings(theme, showGoButton, showAddressLabel,showFullAddress);
+	return CESettings(theme, fShowGoButton, fShowAddressLabel, fShowFullAddress);
 }
 
 void WriteCESettings(CESettings& toWrite)
 {
 	HKEY hKey;
-	LSTATUS ls = RegOpenKeyExW(HKEY_CURRENT_USER, L"SOFTWARE\\ClassicExplorer\\AddressAndThrobber", 0, KEY_WRITE, &hKey);
+	LSTATUS ls = RegOpenKeyExW(HKEY_CURRENT_USER, CE_REGISTRY_PATH, 0, KEY_WRITE, &hKey);
 	if (ls != ERROR_SUCCESS)
 	{
 		// Key doesn't exist, make it
-		ls = RegCreateKeyW(HKEY_CURRENT_USER, L"SOFTWARE\\ClassicExplorer\\AddressAndThrobber", &hKey);
+		ls = RegCreateKeyW(HKEY_CURRENT_USER, CE_REGISTRY_PATH, &hKey);
 		if (ls != ERROR_SUCCESS)
 			return;
 
 		// Open the new key with write access
-		RegOpenKeyExW(HKEY_CURRENT_USER, L"SOFTWARE\\ClassicExplorer\\AddressAndThrobber", 0, KEY_WRITE, &hKey);
+		RegOpenKeyExW(HKEY_CURRENT_USER, CE_REGISTRY_PATH, 0, KEY_WRITE, &hKey);
 	}
 	if (toWrite.theme != CLASSIC_EXPLORER_NONE)
 	{
