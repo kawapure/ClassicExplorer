@@ -53,7 +53,7 @@ LRESULT AddressBar::OnCreate(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL &bHan
 			}
 		}
 		else
-			m_goText = L"Error";
+			m_goText = L"Go";
 	}
 
 	m_toolbar = CreateWindowEx(
