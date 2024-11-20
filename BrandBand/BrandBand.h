@@ -9,7 +9,7 @@
 class ATL_NO_VTABLE CBrandBand :
 	public CWindowImpl<CBrandBand, CWindow, CControlWinTraits>,
 	public CComObjectRootEx<CComMultiThreadModelNoCS>,
-	public CComCoClass<CBrandBand, &CLSID_BrandBand>,
+	public CComCoClass<CBrandBand, &CLSID_CBrandBand>,
 	public IObjectWithSiteImpl<CBrandBand>,
 	public IDeskBand,
 	public IDispEventImpl<1, CBrandBand, &DIID_DWebBrowserEvents2, &LIBID_SHDocVw, 1, 1>

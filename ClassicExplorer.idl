@@ -58,7 +58,7 @@ library AddressBarLib
 	[
 		uuid(9F7E1105-EB11-4A41-857A-F7E1494D3818)
 	]
-	coclass BrandBand
+	coclass CBrandBand
 	{
 		[default] interface IBrandBand;
 	};

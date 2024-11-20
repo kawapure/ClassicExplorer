@@ -226,6 +226,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="AddressBar\AddressBar.h" />
+    <ClInclude Include="BrandBand\BrandBand.h" />
     <ClInclude Include="BrowserHelperObject\BrowserHelperObject.h" />
     <ClInclude Include="ClassicExplorer_i.h" />
     <ClInclude Include="dllmain.h" />
@@ -275,6 +276,7 @@
     <ClCompile Include="AddressBar\AddressBar.cpp" />
     <ClCompile Include="AddressBar\AddressBarHostBand.cpp" />
     <ClCompile Include="AddressBar\AddressBarHostBand.h" />
+    <ClCompile Include="BrandBand\BrandBand.cpp" />
     <ClCompile Include="BrowserHelperObject\BrowserHelperObject.cpp" />
     <ClCompile Include="ClassicExplorer_i.c">
       <CompileAsManaged Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</CompileAsManaged>
@@ -305,7 +307,6 @@
       </PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="util\shell_helpers.cpp" />
-    <ClCompile Include="Throbber\ThrobberBand.cpp" />
     <ClCompile Include="util\util.cpp" />
   </ItemGroup>
   <ItemGroup>

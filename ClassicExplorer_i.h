@@ -59,11 +59,11 @@ typedef interface IAddressBarHostBand IAddressBarHostBand;
 #endif 	/* __IAddressBarHostBand_FWD_DEFINED__ */
 
 
-#ifndef __IThrobberBand_FWD_DEFINED__
-#define __IThrobberBand_FWD_DEFINED__
-typedef interface IThrobberBand IThrobberBand;
+#ifndef __IBrandBand_FWD_DEFINED__
+#define __IBrandBand_FWD_DEFINED__
+typedef interface IBrandBand IBrandBand;
 
-#endif 	/* __IThrobberBand_FWD_DEFINED__ */
+#endif 	/* __IBrandBand_FWD_DEFINED__ */
 
 
 #ifndef __IBrowserHelperObject_FWD_DEFINED__
@@ -85,16 +85,16 @@ typedef struct AddressBarHostBand AddressBarHostBand;
 #endif 	/* __AddressBarHostBand_FWD_DEFINED__ */
 
 
-#ifndef __ThrobberBand_FWD_DEFINED__
-#define __ThrobberBand_FWD_DEFINED__
+#ifndef __CBrandBand_FWD_DEFINED__
+#define __CBrandBand_FWD_DEFINED__
 
 #ifdef __cplusplus
-typedef class ThrobberBand ThrobberBand;
+typedef class CBrandBand CBrandBand;
 #else
-typedef struct ThrobberBand ThrobberBand;
+typedef struct CBrandBand CBrandBand;
 #endif /* __cplusplus */
 
-#endif 	/* __ThrobberBand_FWD_DEFINED__ */
+#endif 	/* __CBrandBand_FWD_DEFINED__ */
 
 
 #ifndef __BrowserHelperObject_FWD_DEFINED__
@@ -245,19 +245,19 @@ EXTERN_C const IID IID_IAddressBarHostBand;
 #endif 	/* __IAddressBarHostBand_INTERFACE_DEFINED__ */
 
 
-#ifndef __IThrobberBand_INTERFACE_DEFINED__
-#define __IThrobberBand_INTERFACE_DEFINED__
+#ifndef __IBrandBand_INTERFACE_DEFINED__
+#define __IBrandBand_INTERFACE_DEFINED__
 
-/* interface IThrobberBand */
+/* interface IBrandBand */
 /* [unique][helpstring][nonextensible][dual][uuid][object] */ 
 
 
-EXTERN_C const IID IID_IThrobberBand;
+EXTERN_C const IID IID_IBrandBand;
 
 #if defined(__cplusplus) && !defined(CINTERFACE)
     
     MIDL_INTERFACE("3E0BC6FD-A487-4438-B669-859D38F594A2")
-    IThrobberBand : public IDispatch
+    IBrandBand : public IDispatch
     {
     public:
     };
@@ -265,40 +265,40 @@ EXTERN_C const IID IID_IThrobberBand;
     
 #else 	/* C style interface */
 
-    typedef struct IThrobberBandVtbl
+    typedef struct IBrandBandVtbl
     {
         BEGIN_INTERFACE
         
         DECLSPEC_XFGVIRT(IUnknown, QueryInterface)
         HRESULT ( STDMETHODCALLTYPE *QueryInterface )( 
-            IThrobberBand * This,
+            IBrandBand * This,
             /* [in] */ REFIID riid,
             /* [annotation][iid_is][out] */ 
             _COM_Outptr_  void **ppvObject);
         
         DECLSPEC_XFGVIRT(IUnknown, AddRef)
         ULONG ( STDMETHODCALLTYPE *AddRef )( 
-            IThrobberBand * This);
+            IBrandBand * This);
         
         DECLSPEC_XFGVIRT(IUnknown, Release)
         ULONG ( STDMETHODCALLTYPE *Release )( 
-            IThrobberBand * This);
+            IBrandBand * This);
         
         DECLSPEC_XFGVIRT(IDispatch, GetTypeInfoCount)
         HRESULT ( STDMETHODCALLTYPE *GetTypeInfoCount )( 
-            IThrobberBand * This,
+            IBrandBand * This,
             /* [out] */ UINT *pctinfo);
         
         DECLSPEC_XFGVIRT(IDispatch, GetTypeInfo)
         HRESULT ( STDMETHODCALLTYPE *GetTypeInfo )( 
-            IThrobberBand * This,
+            IBrandBand * This,
             /* [in] */ UINT iTInfo,
             /* [in] */ LCID lcid,
             /* [out] */ ITypeInfo **ppTInfo);
         
         DECLSPEC_XFGVIRT(IDispatch, GetIDsOfNames)
         HRESULT ( STDMETHODCALLTYPE *GetIDsOfNames )( 
-            IThrobberBand * This,
+            IBrandBand * This,
             /* [in] */ REFIID riid,
             /* [size_is][in] */ LPOLESTR *rgszNames,
             /* [range][in] */ UINT cNames,
@@ -307,7 +307,7 @@ EXTERN_C const IID IID_IThrobberBand;
         
         DECLSPEC_XFGVIRT(IDispatch, Invoke)
         /* [local] */ HRESULT ( STDMETHODCALLTYPE *Invoke )( 
-            IThrobberBand * This,
+            IBrandBand * This,
             /* [annotation][in] */ 
             _In_  DISPID dispIdMember,
             /* [annotation][in] */ 
@@ -326,11 +326,11 @@ EXTERN_C const IID IID_IThrobberBand;
             _Out_opt_  UINT *puArgErr);
         
         END_INTERFACE
-    } IThrobberBandVtbl;
+    } IBrandBandVtbl;
 
-    interface IThrobberBand
+    interface IBrandBand
     {
-        CONST_VTBL struct IThrobberBandVtbl *lpVtbl;
+        CONST_VTBL struct IBrandBandVtbl *lpVtbl;
     };
 
     
@@ -338,26 +338,26 @@ EXTERN_C const IID IID_IThrobberBand;
 #ifdef COBJMACROS
 
 
-#define IThrobberBand_QueryInterface(This,riid,ppvObject)	\
+#define IBrandBand_QueryInterface(This,riid,ppvObject)	\
     ( (This)->lpVtbl -> QueryInterface(This,riid,ppvObject) ) 
 
-#define IThrobberBand_AddRef(This)	\
+#define IBrandBand_AddRef(This)	\
     ( (This)->lpVtbl -> AddRef(This) ) 
 
-#define IThrobberBand_Release(This)	\
+#define IBrandBand_Release(This)	\
     ( (This)->lpVtbl -> Release(This) ) 
 
 
-#define IThrobberBand_GetTypeInfoCount(This,pctinfo)	\
+#define IBrandBand_GetTypeInfoCount(This,pctinfo)	\
     ( (This)->lpVtbl -> GetTypeInfoCount(This,pctinfo) ) 
 
-#define IThrobberBand_GetTypeInfo(This,iTInfo,lcid,ppTInfo)	\
+#define IBrandBand_GetTypeInfo(This,iTInfo,lcid,ppTInfo)	\
     ( (This)->lpVtbl -> GetTypeInfo(This,iTInfo,lcid,ppTInfo) ) 
 
-#define IThrobberBand_GetIDsOfNames(This,riid,rgszNames,cNames,lcid,rgDispId)	\
+#define IBrandBand_GetIDsOfNames(This,riid,rgszNames,cNames,lcid,rgDispId)	\
     ( (This)->lpVtbl -> GetIDsOfNames(This,riid,rgszNames,cNames,lcid,rgDispId) ) 
 
-#define IThrobberBand_Invoke(This,dispIdMember,riid,lcid,wFlags,pDispParams,pVarResult,pExcepInfo,puArgErr)	\
+#define IBrandBand_Invoke(This,dispIdMember,riid,lcid,wFlags,pDispParams,pVarResult,pExcepInfo,puArgErr)	\
     ( (This)->lpVtbl -> Invoke(This,dispIdMember,riid,lcid,wFlags,pDispParams,pVarResult,pExcepInfo,puArgErr) ) 
 
 
@@ -369,7 +369,7 @@ EXTERN_C const IID IID_IThrobberBand;
 
 
 
-#endif 	/* __IThrobberBand_INTERFACE_DEFINED__ */
+#endif 	/* __IBrandBand_INTERFACE_DEFINED__ */
 
 
 #ifndef __IBrowserHelperObject_INTERFACE_DEFINED__
@@ -517,12 +517,12 @@ class DECLSPEC_UUID("FC5A7312-CFFE-4BF1-83E8-22D44C040568")
 AddressBarHostBand;
 #endif
 
-EXTERN_C const CLSID CLSID_ThrobberBand;
+EXTERN_C const CLSID CLSID_CBrandBand;
 
 #ifdef __cplusplus
 
 class DECLSPEC_UUID("9F7E1105-EB11-4A41-857A-F7E1494D3818")
-ThrobberBand;
+CBrandBand;
 #endif
 
 EXTERN_C const CLSID CLSID_BrowserHelperObject;
