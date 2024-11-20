@@ -1,6 +1,6 @@
 /*
- * CBrandBand.cpp: Implements the throbber/brand band. This displays the Windows logo
- *                 in the upper-right corner of the Explorer window.
+ * BrandBand.cpp: Implements the throbber/brand band. This displays the Windows logo
+ *                in the upper-right corner of the Explorer window.
  */
 
 #include "stdafx.h"
