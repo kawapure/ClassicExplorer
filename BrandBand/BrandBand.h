@@ -1,21 +1,18 @@
 #pragma once
 
-#ifndef _THROBBERBAND_H
-#define _THROBBERBAND_H
-
 #include "stdafx.h"
 #include "framework.h"
 #include "resource.h"
 #include "ClassicExplorer_i.h"
 #include "dllmain.h"
 
-class ATL_NO_VTABLE ThrobberBand :
-	public CWindowImpl<ThrobberBand, CWindow, CControlWinTraits>,
+class ATL_NO_VTABLE CBrandBand :
+	public CWindowImpl<CBrandBand, CWindow, CControlWinTraits>,
 	public CComObjectRootEx<CComMultiThreadModelNoCS>,
-	public CComCoClass<ThrobberBand, &CLSID_ThrobberBand>,
-	public IObjectWithSiteImpl<ThrobberBand>,
+	public CComCoClass<CBrandBand, &CLSID_BrandBand>,
+	public IObjectWithSiteImpl<CBrandBand>,
 	public IDeskBand,
-	public IDispEventImpl<1, ThrobberBand, &DIID_DWebBrowserEvents2, &LIBID_SHDocVw, 1, 1>
+	public IDispEventImpl<1, CBrandBand, &DIID_DWebBrowserEvents2, &LIBID_SHDocVw, 1, 1>
 {
 	private: // Class members:
 		CComPtr<IWebBrowser2> m_pWebBrowser = NULL;
@@ -38,16 +35,16 @@ class ATL_NO_VTABLE ThrobberBand :
 		bool m_disableRedraws = false;
 
 	public: // COM class setup:
-		DECLARE_WND_CLASS(L"ClassicExplorer.Throbber")
+		DECLARE_WND_CLASS(L"ClassicExplorer.BrandBand")
 
-		~ThrobberBand(void)
+		~CBrandBand(void)
 		{
 			ClearResources();
 		}
 
-		DECLARE_REGISTRY_RESOURCEID_V2_WITHOUT_MODULE(IDR_CLASSICEXPLORER, ThrobberBand)
+		DECLARE_REGISTRY_RESOURCEID_V2_WITHOUT_MODULE(IDR_CLASSICEXPLORER, CBrandBand)
 
-		BEGIN_MSG_MAP(ThrobberBand)
+		BEGIN_MSG_MAP(CBrandBand)
 			MESSAGE_HANDLER(WM_PAINT, OnPaint)
 			MESSAGE_HANDLER(WM_SIZE, OnSize)
 			MESSAGE_HANDLER(WM_ERASEBKGND, OnEraseBackground)
@@ -55,14 +52,14 @@ class ATL_NO_VTABLE ThrobberBand :
 			//MESSAGE_HANDLER(WM_COMMAND, OnCommand)
 		END_MSG_MAP()
 
-		BEGIN_COM_MAP(ThrobberBand)
+		BEGIN_COM_MAP(CBrandBand)
 			COM_INTERFACE_ENTRY(IOleWindow)
 			COM_INTERFACE_ENTRY(IObjectWithSite)
 			COM_INTERFACE_ENTRY_IID(IID_IDockingWindow, IDockingWindow)
 			COM_INTERFACE_ENTRY_IID(IID_IDeskBand, IDeskBand)
 		END_COM_MAP()
 
-		BEGIN_SINK_MAP(ThrobberBand)
+		BEGIN_SINK_MAP(CBrandBand)
 			SINK_ENTRY_EX(1, DIID_DWebBrowserEvents2, DISPID_NAVIGATECOMPLETE2, OnNavigateComplete)
 			SINK_ENTRY_EX(1, DIID_DWebBrowserEvents2, DISPID_ONQUIT, OnQuit)
 		END_SINK_MAP()
@@ -116,6 +113,4 @@ class ATL_NO_VTABLE ThrobberBand :
 		STDMETHOD(OnQuit)(void);
 };
 
-OBJECT_ENTRY_AUTO(__uuidof(ThrobberBand), ThrobberBand);
-
-#endif // _THROBBERBAND_H
+OBJECT_ENTRY_AUTO(__uuidof(CBrandBand), CBrandBand);

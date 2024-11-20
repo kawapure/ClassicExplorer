@@ -1,6 +1,6 @@
 /*
- * ThrobberBand.cpp: Implements the throbber/brand band. This displays the Windows logo
- *                   in the upper-right corner of the Explorer window.
+ * CBrandBand.cpp: Implements the throbber/brand band. This displays the Windows logo
+ *                 in the upper-right corner of the Explorer window.
  */
 
 #include "stdafx.h"
@@ -11,9 +11,9 @@
 #include <commoncontrols.h>
 #include "util/util.h"
 
-#include "ThrobberBand.h"
+#include "BrandBand.h"
 
-void ThrobberBand::ClearResources()
+void CBrandBand::ClearResources()
 {
 	DeleteObject(m_hBitmap);
 	m_pWebBrowser.Release();
@@ -22,7 +22,7 @@ void ThrobberBand::ClearResources()
 /*
  * OnPaint: Paint the background and the logo.
  */
-LRESULT ThrobberBand::OnPaint(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL &bHandled)
+LRESULT CBrandBand::OnPaint(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL &bHandled)
 {
 	PAINTSTRUCT paintInfo;
 	RECT clientRect;
@@ -77,7 +77,7 @@ LRESULT ThrobberBand::OnPaint(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL &bHa
 /*
  * OnSize: Handle size messages and reload the desired logo bitmap for the current size.
  */
-LRESULT ThrobberBand::OnSize(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL &bHandled)
+LRESULT CBrandBand::OnSize(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL &bHandled)
 {
 	LoadBitmapForSize();
 	
@@ -87,12 +87,12 @@ LRESULT ThrobberBand::OnSize(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL &bHan
 /*
  * OnEraseBackground: We always paint our own background, so there's no need to ever do this.
  */
-LRESULT ThrobberBand::OnEraseBackground(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL &bHandled)
+LRESULT CBrandBand::OnEraseBackground(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL &bHandled)
 {
 	return 1;
 }
 
-LRESULT ThrobberBand::OnClick(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled)
+LRESULT CBrandBand::OnClick(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled)
 {
 	CEUtil::CESettings currentSettings = CEUtil::GetCESettings();
 
@@ -154,7 +154,7 @@ LRESULT ThrobberBand::OnClick(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHa
 /*
  * LoadBitmapForSize: Load the desired throbber icon for the current size of the band.
  */
-LRESULT ThrobberBand::LoadBitmapForSize()
+LRESULT CBrandBand::LoadBitmapForSize()
 {
 	RECT curRect;
 	GetClientRect(&curRect);
@@ -249,7 +249,7 @@ LRESULT ThrobberBand::LoadBitmapForSize()
  * I spent several days straight trying to figure out how to do this; please don't make fun of
  * me too much...
  */
-LRESULT ThrobberBand::CorrectBandSize()
+LRESULT CBrandBand::CorrectBandSize()
 {
 	RECT curRect;
 	GetClientRect(&curRect);
@@ -304,7 +304,7 @@ LRESULT ThrobberBand::CorrectBandSize()
 /*
  * ShouldRefreshVisual: Determines if the visual needs manual correction from our code.
  */
-bool ThrobberBand::ShouldRefreshVisual()
+bool CBrandBand::ShouldRefreshVisual()
 {
 	if (::IsWindow(m_parentRebar))
 	{
@@ -333,7 +333,7 @@ bool ThrobberBand::ShouldRefreshVisual()
 	return false;
 }
 
-void ThrobberBand::PerformRedrawCheck()
+void CBrandBand::PerformRedrawCheck()
 {
 	const int checkDuration = 500;
 	const int allowedRedrawsInTimeSpan = 50;
@@ -366,9 +366,9 @@ void ThrobberBand::PerformRedrawCheck()
  * This is used to initialise the size-correction routine, since it works in a predictable manner, sending
  * notifications about changes to the parent before enacting those changes on the child.
  */
-LRESULT CALLBACK ThrobberBand::RebarParentSubclassProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam, UINT_PTR uIdSubclass, DWORD_PTR dwRefData)
+LRESULT CALLBACK CBrandBand::RebarParentSubclassProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam, UINT_PTR uIdSubclass, DWORD_PTR dwRefData)
 {
-	ThrobberBand *self = (ThrobberBand *)dwRefData;
+	CBrandBand *self = (CBrandBand *)dwRefData;
 
 	if (uMsg == WM_NOTIFY)
 	{
@@ -392,9 +392,9 @@ LRESULT CALLBACK ThrobberBand::RebarParentSubclassProc(HWND hWnd, UINT uMsg, WPA
  * RebarSubclassProc: This reads messages sent to the rebar itself, which is used to send out the sizing
  *                    command when it is needed.
  */
-LRESULT CALLBACK ThrobberBand::RebarSubclassProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam, UINT_PTR uIdSubclass, DWORD_PTR dwRefData)
+LRESULT CALLBACK CBrandBand::RebarSubclassProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam, UINT_PTR uIdSubclass, DWORD_PTR dwRefData)
 {
-	ThrobberBand *self = (ThrobberBand *)dwRefData;
+	CBrandBand *self = (CBrandBand *)dwRefData;
 	
 	if (uMsg == WM_SIZE)
 	{
@@ -415,7 +415,7 @@ LRESULT CALLBACK ThrobberBand::RebarSubclassProc(HWND hWnd, UINT uMsg, WPARAM wP
 //================================================================================================================
 // implement IDeskBand:
 //
-STDMETHODIMP ThrobberBand::GetBandInfo(DWORD dwBandId, DWORD dwViewMode, DESKBANDINFO *pDbi)
+STDMETHODIMP CBrandBand::GetBandInfo(DWORD dwBandId, DWORD dwViewMode, DESKBANDINFO *pDbi)
 {
 	/*if (!m_subclassedRebar)
 	{
@@ -476,7 +476,7 @@ STDMETHODIMP ThrobberBand::GetBandInfo(DWORD dwBandId, DWORD dwViewMode, DESKBAN
 //================================================================================================================
 // implement IOleWindow:
 //
-STDMETHODIMP ThrobberBand::GetWindow(HWND *hWnd)
+STDMETHODIMP CBrandBand::GetWindow(HWND *hWnd)
 {
 	if (!hWnd)
 	{
@@ -487,7 +487,7 @@ STDMETHODIMP ThrobberBand::GetWindow(HWND *hWnd)
 	return S_OK;
 }
 
-STDMETHODIMP ThrobberBand::ContextSensitiveHelp(BOOL fEnterMode)
+STDMETHODIMP CBrandBand::ContextSensitiveHelp(BOOL fEnterMode)
 {
 	return S_OK;
 }
@@ -495,7 +495,7 @@ STDMETHODIMP ThrobberBand::ContextSensitiveHelp(BOOL fEnterMode)
 //================================================================================================================
 // implement IDockingWindow:
 //
-STDMETHODIMP ThrobberBand::CloseDW(unsigned long dwReserved)
+STDMETHODIMP CBrandBand::CloseDW(unsigned long dwReserved)
 {
 	ShowDW(FALSE);
 
@@ -507,12 +507,12 @@ STDMETHODIMP ThrobberBand::CloseDW(unsigned long dwReserved)
 	return S_OK;
 }
 
-STDMETHODIMP ThrobberBand::ResizeBorderDW(const RECT *pRcBorder, IUnknown *pUnkToolbarSite, BOOL fReserved)
+STDMETHODIMP CBrandBand::ResizeBorderDW(const RECT *pRcBorder, IUnknown *pUnkToolbarSite, BOOL fReserved)
 {
 	return E_NOTIMPL;
 }
 
-STDMETHODIMP ThrobberBand::ShowDW(BOOL fShow)
+STDMETHODIMP CBrandBand::ShowDW(BOOL fShow)
 {
 	if (m_hWnd)
 		ShowWindow(fShow ? SW_SHOW : SW_HIDE);
@@ -531,9 +531,9 @@ STDMETHODIMP ThrobberBand::ShowDW(BOOL fShow)
  * This function is additionally responsible for obtaining the shell control APIs and creating
  * the inner toolbar window.
  */
-STDMETHODIMP ThrobberBand::SetSite(IUnknown *pUnkSite)
+STDMETHODIMP CBrandBand::SetSite(IUnknown *pUnkSite)
 {
-	IObjectWithSiteImpl<ThrobberBand>::SetSite(pUnkSite);
+	IObjectWithSiteImpl<CBrandBand>::SetSite(pUnkSite);
 
 	HRESULT hr;
 	CComPtr<IOleWindow> oleWindow;
@@ -606,7 +606,7 @@ STDMETHODIMP ThrobberBand::SetSite(IUnknown *pUnkSite)
 //================================================================================================================
 // handle DWebBrowserEvents2:
 //
-STDMETHODIMP ThrobberBand::OnNavigateComplete(IDispatch *pDisp, VARIANT *url)
+STDMETHODIMP CBrandBand::OnNavigateComplete(IDispatch *pDisp, VARIANT *url)
 {
 	//MessageBox(L"fuck you");
 	CEUtil::FixExplorerSizes(this->m_hWnd);
@@ -621,7 +621,7 @@ STDMETHODIMP ThrobberBand::OnNavigateComplete(IDispatch *pDisp, VARIANT *url)
  * Copied from Open-Shell implementation here:
  * https://github.com/Open-Shell/Open-Shell-Menu/blob/master/Src/ClassicExplorer/ExplorerBand.cpp#L2280-L2285
  */
-STDMETHODIMP ThrobberBand::OnQuit()
+STDMETHODIMP CBrandBand::OnQuit()
 {
 	if (m_pWebBrowser && m_dwEventCookie != 0xFEFEFEFE)
 	{

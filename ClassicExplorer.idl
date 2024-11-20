@@ -24,10 +24,10 @@ interface IAddressBarHostBand : IDispatch {};
 	uuid(3E0BC6FD-A487-4438-B669-859D38F594A2),
 	dual,
 	nonextensible,
-	helpstring("IThrobberBand Interface"),
+	helpstring("IBrandBand Interface"),
 	pointer_default(unique)
 ]
-interface IThrobberBand : IDispatch {};
+interface IBrandBand : IDispatch {};
 
 [
 	object,
@@ -58,9 +58,9 @@ library AddressBarLib
 	[
 		uuid(9F7E1105-EB11-4A41-857A-F7E1494D3818)
 	]
-	coclass ThrobberBand
+	coclass BrandBand
 	{
-		[default] interface IThrobberBand;
+		[default] interface IBrandBand;
 	};
 
 	[

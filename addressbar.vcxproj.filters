@@ -61,13 +61,16 @@
     <ClInclude Include="util\util.h">
       <Filter>Source Files\Main</Filter>
     </ClInclude>
-    <ClInclude Include="Throbber\ThrobberBand.h">
-      <Filter>Source Files\Throbber</Filter>
+    <ClInclude Include="BrandBand\BrandBand.h">
+      <Filter>Source Files\Brand Band</Filter>
     </ClInclude>
     <ClInclude Include="BrowserHelperObject\BrowserHelperObject.h">
       <Filter>Source Files\Browser Helper Object</Filter>
     </ClInclude>
     <ClInclude Include="util\shell_undoc.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="util\settings_manager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="wil\com.h">
@@ -169,6 +172,18 @@
     <ClInclude Include="wil\wrl.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="themesdk.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="simpleini\ConvertUTF.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="simpleini\SimpleIni.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="util\theme.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ClassicExplorer_i.c">
@@ -177,8 +192,8 @@
     <ClCompile Include="AddressBar\AddressBar.cpp">
       <Filter>Source Files\Address Bar</Filter>
     </ClCompile>
-    <ClCompile Include="Throbber\ThrobberBand.cpp">
-      <Filter>Source Files\Throbber</Filter>
+    <ClCompile Include="BrandBand\BrandBand.cpp">
+      <Filter>Source Files\Brand Band</Filter>
     </ClCompile>
     <ClCompile Include="dllmain.cpp">
       <Filter>Source Files\Main</Filter>

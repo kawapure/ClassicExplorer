@@ -14,7 +14,7 @@
 #define PROG_ID_WITH_VERSION      PROG_ID##.1
 
 #define CLSID_AddressBarHostBand  {FC5A7312-CFFE-4BF1-83E8-22D44C040568} 
-#define CLSID_ThrobberBand        {9F7E1105-EB11-4A41-857A-F7E1494D3818}
+#define CLSID_BrandBand           {9F7E1105-EB11-4A41-857A-F7E1494D3818}
 #define CLSID_BrowserHelperObject {844CFA4E-7D74-4C80-B134-D214C9699F98}
 
 #define TYPELIB_ClassicExplorer   {205F9779-62D5-4E06-8DAD-8E150FFA38DB}
@@ -52,7 +52,7 @@ HKCR
 			'TypeLib' = s TYPELIB_ClassicExplorer
 		}
 
-		ForceRemove CLSID_ThrobberBand = s 'Throbber'
+		ForceRemove CLSID_BrandBand = s 'Brand Band'
 		{
 			ProgID = s PROG_ID_WITH_VERSION
 			VersionIndependentProgID = s PROG_ID
@@ -92,7 +92,7 @@ HKLM
 				NoRemove Toolbar
 				{
 					ForceRemove val CLSID_AddressBarHostBand = b ''
-					ForceRemove val CLSID_ThrobberBand = b ''
+					ForceRemove val CLSID_BrandBand = b ''
 				}
 			}
 			NoRemove Windows
@@ -107,7 +107,7 @@ HKLM
 							{
 								// Toolbar policies
 								ForceRemove val CLSID_AddressBarHostBand = s '2'
-								ForceRemove val CLSID_ThrobberBand = s '2'
+								ForceRemove val CLSID_BrandBand = s '2'
 							}
 						}
 					}
