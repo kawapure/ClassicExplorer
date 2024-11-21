@@ -167,7 +167,7 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="BrandBand\BrandBand.h">
-      <Filter>Source Files\Throbber</Filter>
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -196,7 +196,7 @@
       <Filter>Source Files\Browser Helper Object</Filter>
     </ClCompile>
     <ClCompile Include="BrandBand\BrandBand.cpp">
-      <Filter>Source Files\Throbber</Filter>
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
