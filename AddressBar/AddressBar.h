@@ -11,7 +11,7 @@
 #include "util/util.h"
 #include <string>
 
-class CAddressBar : public CWindowImpl<CAddressBar>
+class AddressBar : public CWindowImpl<AddressBar>
 {
 	protected: // Class members:
 		CWindow m_toolbar = NULL;
@@ -36,7 +36,7 @@ class CAddressBar : public CWindowImpl<CAddressBar>
 		// provides useful events.
 		CComPtr<IWebBrowser2> m_pWebBrowser = NULL;
 
-		friend class CAddressBarHostBand;
+		friend class AddressBarHostBand;
 
 	public: // Window setup:
 		DECLARE_WND_CLASS(L"ClassicExplorer.AddressBar")

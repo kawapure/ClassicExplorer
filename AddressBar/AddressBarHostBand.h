@@ -10,36 +10,36 @@
 #include "dllmain.h"
 #include "AddressBar.h"
 
-class ATL_NO_VTABLE CAddressBarHostBand :
+class ATL_NO_VTABLE AddressBarHostBand :
 	public CComObjectRootEx<CComSingleThreadModel>,
-	public CComCoClass<CAddressBarHostBand, &CLSID_CAddressBarHostBand>,
-	public IObjectWithSiteImpl<CAddressBarHostBand>,
+	public CComCoClass<AddressBarHostBand, &CLSID_AddressBarHostBand>,
+	public IObjectWithSiteImpl<AddressBarHostBand>,
 	public IDeskBand,
-	public IDispEventImpl<1, CAddressBarHostBand, &DIID_DWebBrowserEvents2, &LIBID_SHDocVw, 1, 1>,
+	public IDispEventImpl<1, AddressBarHostBand, &DIID_DWebBrowserEvents2, &LIBID_SHDocVw, 1, 1>,
 	public IInputObject,
 	public IInputObjectSite
 {
 	protected: // Class members:
 		IInputObjectSite *m_pSite = NULL;
 		HWND m_parentWindow = NULL;
-		CAddressBar m_addressBar;
+		AddressBar m_addressBar;
 		CComPtr<IWebBrowser2> m_pWebBrowser = NULL;
 		static std::wstring m_addressText;
 
-		friend class CAddressBar;
+		friend class AddressBar;
 
 	protected: // Internal methods:
 		WCHAR GetAddressAccelerator();
 
 	public: // COM class setup:
-		DECLARE_REGISTRY_RESOURCEID_V2_WITHOUT_MODULE(IDR_CLASSICEXPLORER, CAddressBarHostBand)
+		DECLARE_REGISTRY_RESOURCEID_V2_WITHOUT_MODULE(IDR_CLASSICEXPLORER, AddressBarHostBand)
 
-		BEGIN_SINK_MAP(CAddressBarHostBand)
+		BEGIN_SINK_MAP(AddressBarHostBand)
 			SINK_ENTRY_EX(1, DIID_DWebBrowserEvents2, DISPID_NAVIGATECOMPLETE2, OnNavigateComplete)
 			SINK_ENTRY_EX(1, DIID_DWebBrowserEvents2, DISPID_ONQUIT, OnQuit)
 		END_SINK_MAP()
 
-		BEGIN_COM_MAP(CAddressBarHostBand)
+		BEGIN_COM_MAP(AddressBarHostBand)
 			COM_INTERFACE_ENTRY(IOleWindow)
 			COM_INTERFACE_ENTRY(IObjectWithSite)
 			COM_INTERFACE_ENTRY_IID(IID_IDockingWindow, IDockingWindow)
@@ -86,6 +86,6 @@ class ATL_NO_VTABLE CAddressBarHostBand :
 		STDMETHOD(OnFocusChangeIS)(IUnknown *pUnkObj, BOOL fSetFocus);
 };
 
-OBJECT_ENTRY_AUTO(__uuidof(CAddressBarHostBand), CAddressBarHostBand);
+OBJECT_ENTRY_AUTO(__uuidof(AddressBarHostBand), AddressBarHostBand);
 
 #endif // _ADDRESSBARHOSTBAND_H

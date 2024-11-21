@@ -50,7 +50,7 @@ library AddressBarLib
 	[
 		uuid(FC5A7312-CFFE-4BF1-83E8-22D44C040568)
 	]
-	coclass CAddressBarHostBand
+	coclass AddressBarHostBand
 	{
 		[default] interface IAddressBarHostBand;
 	};

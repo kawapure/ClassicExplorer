@@ -73,16 +73,16 @@ typedef interface IBrowserHelperObject IBrowserHelperObject;
 #endif 	/* __IBrowserHelperObject_FWD_DEFINED__ */
 
 
-#ifndef __CAddressBarHostBand_FWD_DEFINED__
-#define __CAddressBarHostBand_FWD_DEFINED__
+#ifndef __AddressBarHostBand_FWD_DEFINED__
+#define __AddressBarHostBand_FWD_DEFINED__
 
 #ifdef __cplusplus
-typedef class CAddressBarHostBand CAddressBarHostBand;
+typedef class AddressBarHostBand AddressBarHostBand;
 #else
-typedef struct CAddressBarHostBand CAddressBarHostBand;
+typedef struct AddressBarHostBand AddressBarHostBand;
 #endif /* __cplusplus */
 
-#endif 	/* __CAddressBarHostBand_FWD_DEFINED__ */
+#endif 	/* __AddressBarHostBand_FWD_DEFINED__ */
 
 
 #ifndef __CBrandBand_FWD_DEFINED__
@@ -509,12 +509,12 @@ EXTERN_C const IID IID_IBrowserHelperObject;
 
 EXTERN_C const IID LIBID_AddressBarLib;
 
-EXTERN_C const CLSID CLSID_CAddressBarHostBand;
+EXTERN_C const CLSID CLSID_AddressBarHostBand;
 
 #ifdef __cplusplus
 
 class DECLSPEC_UUID("FC5A7312-CFFE-4BF1-83E8-22D44C040568")
-CAddressBarHostBand;
+AddressBarHostBand;
 #endif
 
 EXTERN_C const CLSID CLSID_CBrandBand;

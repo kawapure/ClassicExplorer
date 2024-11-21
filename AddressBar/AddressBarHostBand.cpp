@@ -21,13 +21,13 @@
 
 #include "AddressBarHostBand.h"
 
-std::wstring CAddressBarHostBand::m_addressText = L"";
+std::wstring AddressBarHostBand::m_addressText = L"";
 
 //================================================================================================================
 // implement IDeskBand:
 //
 
-WCHAR CAddressBarHostBand::GetAddressAccelerator()
+WCHAR AddressBarHostBand::GetAddressAccelerator()
 {
 	for (int i = 0; i < m_addressText.length(); i++)
 	{
@@ -45,7 +45,7 @@ WCHAR CAddressBarHostBand::GetAddressAccelerator()
  * GetBandInfo: This is queried by the Shell and must return relevant information about
  *              the Desk Band.
  */
-STDMETHODIMP CAddressBarHostBand::GetBandInfo(DWORD dwBandId, DWORD dwViewMode, DESKBANDINFO *pDbi)
+STDMETHODIMP AddressBarHostBand::GetBandInfo(DWORD dwBandId, DWORD dwViewMode, DESKBANDINFO *pDbi)
 {
 	RECT rc;
 	SendMessage(m_addressBar.GetToolbar(), TB_GETITEMRECT, 0, (LPARAM)&rc);
@@ -101,7 +101,7 @@ STDMETHODIMP CAddressBarHostBand::GetBandInfo(DWORD dwBandId, DWORD dwViewMode, 
 //================================================================================================================
 // implement IOleWindow:
 //
-STDMETHODIMP CAddressBarHostBand::GetWindow(HWND *hWnd)
+STDMETHODIMP AddressBarHostBand::GetWindow(HWND *hWnd)
 {
 	if (!hWnd)
 	{
@@ -112,7 +112,7 @@ STDMETHODIMP CAddressBarHostBand::GetWindow(HWND *hWnd)
 	return S_OK;
 }
 
-STDMETHODIMP CAddressBarHostBand::ContextSensitiveHelp(BOOL fEnterMode)
+STDMETHODIMP AddressBarHostBand::ContextSensitiveHelp(BOOL fEnterMode)
 {
 	return S_OK;
 }
@@ -120,17 +120,17 @@ STDMETHODIMP CAddressBarHostBand::ContextSensitiveHelp(BOOL fEnterMode)
 //================================================================================================================
 // implement IDockingWindow:
 //
-STDMETHODIMP CAddressBarHostBand::CloseDW(unsigned long dwReserved)
+STDMETHODIMP AddressBarHostBand::CloseDW(unsigned long dwReserved)
 {
 	return ShowDW(FALSE);
 }
 
-STDMETHODIMP CAddressBarHostBand::ResizeBorderDW(const RECT *pRcBorder, IUnknown *pUnkToolbarSite, BOOL fReserved)
+STDMETHODIMP AddressBarHostBand::ResizeBorderDW(const RECT *pRcBorder, IUnknown *pUnkToolbarSite, BOOL fReserved)
 {
 	return E_NOTIMPL;
 }
 
-STDMETHODIMP CAddressBarHostBand::ShowDW(BOOL fShow)
+STDMETHODIMP AddressBarHostBand::ShowDW(BOOL fShow)
 {
 	ShowWindow(m_addressBar.GetToolbar(), fShow ? SW_SHOW : SW_HIDE);
 	return S_OK;
@@ -147,9 +147,9 @@ STDMETHODIMP CAddressBarHostBand::ShowDW(BOOL fShow)
  * This function is additionally responsible for obtaining the shell control APIs and creating
  * the actual toolbar control window.
  */
-STDMETHODIMP CAddressBarHostBand::SetSite(IUnknown *pUnkSite)
+STDMETHODIMP AddressBarHostBand::SetSite(IUnknown *pUnkSite)
 {
-	IObjectWithSiteImpl<CAddressBarHostBand>::SetSite(pUnkSite);
+	IObjectWithSiteImpl<AddressBarHostBand>::SetSite(pUnkSite);
 
 	if (m_addressBar.IsWindow())
 	{
@@ -234,7 +234,7 @@ STDMETHODIMP CAddressBarHostBand::SetSite(IUnknown *pUnkSite)
 // handle DWebBrowserEvents2:
 //
 
-STDMETHODIMP CAddressBarHostBand::OnNavigateComplete(IDispatch *pDisp, VARIANT *url)
+STDMETHODIMP AddressBarHostBand::OnNavigateComplete(IDispatch *pDisp, VARIANT *url)
 {
 	m_addressBar.HandleNavigate();
 
@@ -250,7 +250,7 @@ STDMETHODIMP CAddressBarHostBand::OnNavigateComplete(IDispatch *pDisp, VARIANT *
  * Copied from Open-Shell implementation here:
  * https://github.com/Open-Shell/Open-Shell-Menu/blob/master/Src/ClassicExplorer/ExplorerBand.cpp#L2280-L2285
  */
-STDMETHODIMP CAddressBarHostBand::OnQuit()
+STDMETHODIMP AddressBarHostBand::OnQuit()
 {
 	if (m_pWebBrowser && m_dwEventCookie != 0xFEFEFEFE)
 	{
@@ -264,7 +264,7 @@ STDMETHODIMP CAddressBarHostBand::OnQuit()
 // implement IInputObject:
 //
 
-STDMETHODIMP CAddressBarHostBand::HasFocusIO()
+STDMETHODIMP AddressBarHostBand::HasFocusIO()
 {
 	if (
 		GetFocus() == m_addressBar.m_comboBoxEditCtl || 
@@ -279,7 +279,7 @@ STDMETHODIMP CAddressBarHostBand::HasFocusIO()
 	}
 }
 
-STDMETHODIMP CAddressBarHostBand::TranslateAcceleratorIO(MSG *pMsg)
+STDMETHODIMP AddressBarHostBand::TranslateAcceleratorIO(MSG *pMsg)
 {
 	switch (pMsg->message)
 	{
@@ -322,7 +322,7 @@ STDMETHODIMP CAddressBarHostBand::TranslateAcceleratorIO(MSG *pMsg)
 	return S_FALSE;
 }
 
-STDMETHODIMP CAddressBarHostBand::UIActivateIO(BOOL fActivate, MSG *pMsg)
+STDMETHODIMP AddressBarHostBand::UIActivateIO(BOOL fActivate, MSG *pMsg)
 {
 	if (fActivate)
 	{
@@ -337,7 +337,7 @@ STDMETHODIMP CAddressBarHostBand::UIActivateIO(BOOL fActivate, MSG *pMsg)
 // implement IInputObjectSite:
 //
 
-STDMETHODIMP CAddressBarHostBand::OnFocusChangeIS(IUnknown *pUnkObj, BOOL fSetFocus)
+STDMETHODIMP AddressBarHostBand::OnFocusChangeIS(IUnknown *pUnkObj, BOOL fSetFocus)
 {
 	return E_NOTIMPL;
 }
