@@ -338,7 +338,7 @@ void CBrandBand::PerformRedrawCheck()
 	const int allowedRedrawsInTimeSpan = 50;
 
 	unsigned int previousRedrawTime = m_latestRedrawTime;
-	m_latestRedrawTime = GetTickCount();
+	m_latestRedrawTime = GetTickCount64();
 
 	if (m_latestRedrawTime < previousRedrawTime + checkDuration)
 	{
