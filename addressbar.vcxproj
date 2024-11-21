@@ -236,7 +236,6 @@
     <ClInclude Include="util\shell_undoc.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
-    <ClInclude Include="Throbber\ThrobberBand.h" />
     <ClInclude Include="util\util.h" />
     <ClInclude Include="wil\com.h" />
     <ClInclude Include="wil\common.h" />

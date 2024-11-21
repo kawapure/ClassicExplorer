@@ -14,12 +14,12 @@
 #include "AddressBar.h"
 #include "winreg.h"
 
-std::wstring AddressBar::m_goText = L"";
+std::wstring CAddressBar::m_goText = L"";
 
 /*
  * OnCreate: Handle the WM_CREATE message sent out and create the address bar controls.
  */
-LRESULT AddressBar::OnCreate(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL &bHandled)
+LRESULT CAddressBar::OnCreate(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL &bHandled)
 {
 	HINSTANCE moduleInstance = _AtlBaseModule.GetModuleInstance();
 
@@ -119,7 +119,7 @@ LRESULT AddressBar::OnCreate(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL &bHan
  * 
  * TODO: Implement the ability to properly toggle this feature.
  */
-LRESULT AddressBar::CreateGoButton()
+LRESULT CAddressBar::CreateGoButton()
 {
 	HINSTANCE moduleInstance = _AtlBaseModule.GetModuleInstance();
 
@@ -211,7 +211,7 @@ LRESULT AddressBar::CreateGoButton()
  * 
  * This is only called once every time a new explorer window is opened.
  */
-HRESULT AddressBar::InitComboBox()
+HRESULT CAddressBar::InitComboBox()
 {
 	RefreshCurrentAddress();
 
@@ -221,7 +221,7 @@ HRESULT AddressBar::InitComboBox()
 /*
  * OnDestroy: Handle WM_DESTROY messages.
  */
-LRESULT AddressBar::OnDestroy(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL &bHandled)
+LRESULT CAddressBar::OnDestroy(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL &bHandled)
 {
 	return 0;
 }
@@ -230,7 +230,7 @@ LRESULT AddressBar::OnDestroy(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL &bHa
  * OnComponentNotifyClick: Handle click events sent out to other components:
  *                         notably, the go button.
  */
-LRESULT AddressBar::OnComponentNotifyClick(WPARAM wParam, LPNMHDR notifyHeader, BOOL &bHandled)
+LRESULT CAddressBar::OnComponentNotifyClick(WPARAM wParam, LPNMHDR notifyHeader, BOOL &bHandled)
 {
 	if (notifyHeader->hwndFrom == m_goButton)
 	{
@@ -246,7 +246,7 @@ LRESULT AddressBar::OnComponentNotifyClick(WPARAM wParam, LPNMHDR notifyHeader, 
  * This is used in order to respond to events sent out from the combobox for UX
  * reasons, such as switching the display text with the full path when clicked.
  */
-LRESULT AddressBar::OnNotify(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL &bHandled)
+LRESULT CAddressBar::OnNotify(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL &bHandled)
 {
 	LPNMHDR hdr = (LPNMHDR)lParam;
 
@@ -282,9 +282,9 @@ LRESULT AddressBar::OnNotify(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL &bHan
  * This is used for properly sizing and positioning the address bar controls,
  * among other things.
  */
-LRESULT CALLBACK AddressBar::ComboboxSubclassProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam, UINT_PTR uIdSubclass, DWORD_PTR dwRefData)
+LRESULT CALLBACK CAddressBar::ComboboxSubclassProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam, UINT_PTR uIdSubclass, DWORD_PTR dwRefData)
 {
-	AddressBar *self = (AddressBar *)dwRefData;
+	CAddressBar *self = (CAddressBar *)dwRefData;
 
 	if (uMsg == WM_SIZE || uMsg == WM_WINDOWPOSCHANGING)
 	{
@@ -370,9 +370,9 @@ LRESULT CALLBACK AddressBar::ComboboxSubclassProc(HWND hWnd, UINT uMsg, WPARAM w
 /*
  * RealComboboxSubclassProc: todo?
  */
-LRESULT CALLBACK AddressBar::RealComboboxSubclassProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam, UINT_PTR uIdSubclass, DWORD_PTR dwRefData)
+LRESULT CALLBACK CAddressBar::RealComboboxSubclassProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam, UINT_PTR uIdSubclass, DWORD_PTR dwRefData)
 {
-	AddressBar *self = (AddressBar *)dwRefData;
+	CAddressBar *self = (CAddressBar *)dwRefData;
 
 	return DefSubclassProc(hWnd, uMsg, wParam, lParam);
 }
@@ -380,7 +380,7 @@ LRESULT CALLBACK AddressBar::RealComboboxSubclassProc(HWND hWnd, UINT uMsg, WPAR
 /*
  * SetBrowsers: Set the browser interfaces to use for navigation purposes.
  */
-void AddressBar::SetBrowsers(CComPtr<IShellBrowser> pShellBrowser, CComPtr<IWebBrowser2> pWebBrowser)
+void CAddressBar::SetBrowsers(CComPtr<IShellBrowser> pShellBrowser, CComPtr<IWebBrowser2> pWebBrowser)
 {
 	m_pShellBrowser = pShellBrowser;
 	m_pWebBrowser = pWebBrowser;
@@ -389,7 +389,7 @@ void AddressBar::SetBrowsers(CComPtr<IShellBrowser> pShellBrowser, CComPtr<IWebB
 /*
  * HandleNavigate: Handle a browser navigation event.
  */
-HRESULT AddressBar::HandleNavigate()
+HRESULT CAddressBar::HandleNavigate()
 {
 	RefreshCurrentAddress();
 
@@ -403,7 +403,7 @@ HRESULT AddressBar::HandleNavigate()
  * 
  * TODO: Split this up into smaller utility functions for code reuse purposes.
  */
-HRESULT AddressBar::RefreshCurrentAddress()
+HRESULT CAddressBar::RefreshCurrentAddress()
 {
 	HRESULT hr = NULL;
 	PIDLIST_ABSOLUTE pidlCurrentFolder;
@@ -529,7 +529,7 @@ HRESULT AddressBar::RefreshCurrentAddress()
 /*
  * GetCurrentAddressText: Get the current text in the address bar.
  */
-BOOL AddressBar::GetCurrentAddressText(CComHeapPtr<WCHAR> &pszText)
+BOOL CAddressBar::GetCurrentAddressText(CComHeapPtr<WCHAR> &pszText)
 {
 	pszText.Free();
 
@@ -543,7 +543,7 @@ BOOL AddressBar::GetCurrentAddressText(CComHeapPtr<WCHAR> &pszText)
 /*
  * Execute: Perform the browse action with the requested address.
  */
-HRESULT AddressBar::Execute()
+HRESULT CAddressBar::Execute()
 {
 	HRESULT hr = E_FAIL;
 	PIDLIST_RELATIVE parsedPidl;
@@ -616,7 +616,7 @@ HRESULT AddressBar::Execute()
 /*
  * ParseAddress: Parse the browser address into m_lastParsedPidl.
  */
-HRESULT AddressBar::ParseAddress(PIDLIST_RELATIVE *pidlOut)
+HRESULT CAddressBar::ParseAddress(PIDLIST_RELATIVE *pidlOut)
 {
 	HRESULT hr = E_FAIL;
 
@@ -706,7 +706,7 @@ HRESULT AddressBar::ParseAddress(PIDLIST_RELATIVE *pidlOut)
  * ExecuteCommandLine: Run the text in the address bar as if it is a shell
  *                     command.
  */
-HRESULT AddressBar::ExecuteCommandLine()
+HRESULT CAddressBar::ExecuteCommandLine()
 {
 	HRESULT hr = E_FAIL;
 
@@ -756,7 +756,7 @@ HRESULT AddressBar::ExecuteCommandLine()
  * 
  * See: https://learn.microsoft.com/en-us/previous-versions/windows/desktop/legacy/cc144089(v=vs.85)
  */
-HRESULT AddressBar::GetCurrentFolderPidl(PIDLIST_ABSOLUTE *pidlOut)
+HRESULT CAddressBar::GetCurrentFolderPidl(PIDLIST_ABSOLUTE *pidlOut)
 {
 	return CEUtil::GetCurrentFolderPidl(m_pShellBrowser, pidlOut);
 }
@@ -768,7 +768,7 @@ HRESULT AddressBar::GetCurrentFolderPidl(PIDLIST_ABSOLUTE *pidlOut)
  * or in the case of Known Folders which should always show their display name
  * (for example, the user's Documents folder).
  */
-HRESULT AddressBar::GetCurrentFolderName(WCHAR *pszName, long length)
+HRESULT CAddressBar::GetCurrentFolderName(WCHAR *pszName, long length)
 {
 	HRESULT hr = NULL;
 

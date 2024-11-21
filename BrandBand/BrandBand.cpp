@@ -35,7 +35,6 @@ LRESULT CBrandBand::OnPaint(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL &bHand
 	destinationPoint.x = (clientRect.right - clientRect.left - m_cxCurBmp) / 2;
 	destinationPoint.y = (clientRect.bottom - clientRect.top - m_cyCurBmp) / 2;
 
-	//COLORREF background = m_theme == CLASSIC_EXPLORER_2K ? RGB(0, 0, 0) : RGB(255, 255, 255);
 	COLORREF background;
 	if (m_theme == CLASSIC_EXPLORER_2K || m_theme == CLASSIC_EXPLORER_MEMPHIS)
 	{
@@ -339,7 +338,7 @@ void CBrandBand::PerformRedrawCheck()
 	const int allowedRedrawsInTimeSpan = 50;
 
 	unsigned int previousRedrawTime = m_latestRedrawTime;
-	m_latestRedrawTime = GetTickCount();
+	m_latestRedrawTime = GetTickCount64();
 
 	if (m_latestRedrawTime < previousRedrawTime + checkDuration)
 	{
