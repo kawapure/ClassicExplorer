@@ -10,36 +10,36 @@
 #include "dllmain.h"
 #include "AddressBar.h"
 
-class ATL_NO_VTABLE AddressBarHostBand :
+class ATL_NO_VTABLE CAddressBarHostBand :
 	public CComObjectRootEx<CComSingleThreadModel>,
-	public CComCoClass<AddressBarHostBand, &CLSID_AddressBarHostBand>,
-	public IObjectWithSiteImpl<AddressBarHostBand>,
+	public CComCoClass<CAddressBarHostBand, &CLSID_CAddressBarHostBand>,
+	public IObjectWithSiteImpl<CAddressBarHostBand>,
 	public IDeskBand,
-	public IDispEventImpl<1, AddressBarHostBand, &DIID_DWebBrowserEvents2, &LIBID_SHDocVw, 1, 1>,
+	public IDispEventImpl<1, CAddressBarHostBand, &DIID_DWebBrowserEvents2, &LIBID_SHDocVw, 1, 1>,
 	public IInputObject,
 	public IInputObjectSite
 {
 	protected: // Class members:
 		IInputObjectSite *m_pSite = NULL;
 		HWND m_parentWindow = NULL;
-		AddressBar m_addressBar;
+		CAddressBar m_addressBar;
 		CComPtr<IWebBrowser2> m_pWebBrowser = NULL;
 		static std::wstring m_addressText;
 
-		friend class AddressBar;
+		friend class CAddressBar;
 
 	protected: // Internal methods:
 		WCHAR GetAddressAccelerator();
 
 	public: // COM class setup:
-		DECLARE_REGISTRY_RESOURCEID_V2_WITHOUT_MODULE(IDR_CLASSICEXPLORER, AddressBarHostBand)
+		DECLARE_REGISTRY_RESOURCEID_V2_WITHOUT_MODULE(IDR_CLASSICEXPLORER, CAddressBarHostBand)
 
-		BEGIN_SINK_MAP(AddressBarHostBand)
+		BEGIN_SINK_MAP(CAddressBarHostBand)
 			SINK_ENTRY_EX(1, DIID_DWebBrowserEvents2, DISPID_NAVIGATECOMPLETE2, OnNavigateComplete)
 			SINK_ENTRY_EX(1, DIID_DWebBrowserEvents2, DISPID_ONQUIT, OnQuit)
 		END_SINK_MAP()
 
-		BEGIN_COM_MAP(AddressBarHostBand)
+		BEGIN_COM_MAP(CAddressBarHostBand)
 			COM_INTERFACE_ENTRY(IOleWindow)
 			COM_INTERFACE_ENTRY(IObjectWithSite)
 			COM_INTERFACE_ENTRY_IID(IID_IDockingWindow, IDockingWindow)
@@ -86,6 +86,6 @@ class ATL_NO_VTABLE AddressBarHostBand :
 		STDMETHOD(OnFocusChangeIS)(IUnknown *pUnkObj, BOOL fSetFocus);
 };
 
-OBJECT_ENTRY_AUTO(__uuidof(AddressBarHostBand), AddressBarHostBand);
+OBJECT_ENTRY_AUTO(__uuidof(CAddressBarHostBand), CAddressBarHostBand);
 
 #endif // _ADDRESSBARHOSTBAND_H
