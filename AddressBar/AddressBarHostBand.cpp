@@ -18,6 +18,7 @@
 #include "ClassicExplorer_i.h"
 #include "dllmain.h"
 #include <commoncontrols.h>
+#include "util/settings_manager.h"
 
 #include "AddressBarHostBand.h"
 

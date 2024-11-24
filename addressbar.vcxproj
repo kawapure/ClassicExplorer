@@ -232,11 +232,16 @@
     <ClInclude Include="dllmain.h" />
     <ClInclude Include="framework.h" />
     <ClInclude Include="resource.h" />
+    <ClInclude Include="simpleini\ConvertUTF.h" />
+    <ClInclude Include="simpleini\SimpleIni.h" />
+    <ClInclude Include="util\settings_manager.h" />
     <ClInclude Include="util\shell_helpers.h" />
     <ClInclude Include="util\shell_undoc.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
     <ClInclude Include="Throbber\ThrobberBand.h" />
+    <ClInclude Include="themesdk.h" />
+    <ClInclude Include="util\theme.h" />
     <ClInclude Include="util\util.h" />
     <ClInclude Include="wil\com.h" />
     <ClInclude Include="wil\common.h" />
@@ -306,7 +311,11 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
       </PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="simpleini\ConvertUTF.c" />
+    <ClCompile Include="util\settings_manager.cpp" />
     <ClCompile Include="util\shell_helpers.cpp" />
+    <ClCompile Include="Throbber\ThrobberBand.cpp" />
+    <ClCompile Include="util\theme.cpp" />
     <ClCompile Include="util\util.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -349,20 +358,10 @@
     <Image Include="DefaultResources\10_throbber_s0.bmp" />
     <Image Include="DefaultResources\10_throbber_s1.bmp" />
     <Image Include="DefaultResources\10_throbber_s2.bmp" />
-    <Image Include="DefaultResources\2k_go_active.bmp" />
-    <Image Include="DefaultResources\2k_go_inactive.bmp" />
-    <Image Include="DefaultResources\2k_throbber_s0.bmp" />
-    <Image Include="DefaultResources\2k_throbber_s1.bmp" />
-    <Image Include="DefaultResources\2k_throbber_s2.bmp" />
     <Image Include="DefaultResources\bg_music_blue.bmp" />
     <Image Include="DefaultResources\bg_pictures_blue.bmp" />
     <Image Include="DefaultResources\bg_search_blue.bmp" />
     <Image Include="DefaultResources\bg_videos_blue.bmp" />
-    <Image Include="DefaultResources\memphis\go_active.bmp" />
-    <Image Include="DefaultResources\memphis\go_inactive.bmp" />
-    <Image Include="DefaultResources\memphis\throbber_s0.bmp" />
-    <Image Include="DefaultResources\memphis\throbber_s1.bmp" />
-    <Image Include="DefaultResources\memphis\throbber_s2.bmp" />
     <Image Include="DefaultResources\xp_go_active.bmp" />
     <Image Include="DefaultResources\xp_go_inactive.bmp" />
     <Image Include="DefaultResources\xp_throbber_s0.bmp" />

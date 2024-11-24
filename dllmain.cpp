@@ -7,6 +7,7 @@
 #include "resource.h"
 #include "ClassicExplorer_i.h"
 #include "dllmain.h"
+#include "util/settings_manager.h"
 
 CAddressBarModule g_AtlModule;
 
@@ -91,5 +92,9 @@ STDAPI DllInstall(BOOL bInstall, _In_opt_  LPCWSTR pszCmdLine)
 // DLL entry point, managed by ATL.
 extern "C" BOOL WINAPI DllMain(HINSTANCE hInstance, DWORD dwReason, LPVOID lpReserved)
 {
-	return g_AtlModule.DllMain(dwReason, lpReserved);
+	BOOL result = g_AtlModule.DllMain(dwReason, lpReserved);
+
+	CEUtil::CSettingsManager::CreateInstance();
+
+	return result;
 }

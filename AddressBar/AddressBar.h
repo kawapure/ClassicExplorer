@@ -30,7 +30,6 @@ class AddressBar : public CWindowImpl<AddressBar>
 		WCHAR m_currentPath[1024] = { 0 };
 		bool m_locationHasPhysicalPath = false;
 		static std::wstring m_goText;
-		ClassicExplorerTheme m_theme;
 
 		// This Internet Explorer API is also compatible with File Explorer, and
 		// provides useful events.

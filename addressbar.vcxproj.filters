@@ -196,6 +196,13 @@
       <Filter>Source Files\Browser Helper Object</Filter>
     </ClCompile>
     <ClCompile Include="BrandBand\BrandBand.cpp">
+    <ClCompile Include="util\settings_manager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="util\theme.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="simpleini\ConvertUTF.c">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -218,21 +225,6 @@
     </Midl>
   </ItemGroup>
   <ItemGroup>
-    <Image Include="DefaultResources\2k_go_active.bmp">
-      <Filter>Resource Files\Default Resources</Filter>
-    </Image>
-    <Image Include="DefaultResources\2k_go_inactive.bmp">
-      <Filter>Resource Files\Default Resources</Filter>
-    </Image>
-    <Image Include="DefaultResources\2k_throbber_s0.bmp">
-      <Filter>Resource Files\Default Resources</Filter>
-    </Image>
-    <Image Include="DefaultResources\2k_throbber_s1.bmp">
-      <Filter>Resource Files\Default Resources</Filter>
-    </Image>
-    <Image Include="DefaultResources\2k_throbber_s2.bmp">
-      <Filter>Resource Files\Default Resources</Filter>
-    </Image>
     <Image Include="DefaultResources\10_go_active.bmp">
       <Filter>Resource Files\Default Resources</Filter>
     </Image>
@@ -248,21 +240,6 @@
     <Image Include="DefaultResources\10_throbber_s2.bmp">
       <Filter>Resource Files\Default Resources</Filter>
     </Image>
-    <Image Include="DefaultResources\xp_go_active.bmp">
-      <Filter>Resource Files\Default Resources</Filter>
-    </Image>
-    <Image Include="DefaultResources\xp_go_inactive.bmp">
-      <Filter>Resource Files\Default Resources</Filter>
-    </Image>
-    <Image Include="DefaultResources\xp_throbber_s0.bmp">
-      <Filter>Resource Files\Default Resources</Filter>
-    </Image>
-    <Image Include="DefaultResources\xp_throbber_s1.bmp">
-      <Filter>Resource Files\Default Resources</Filter>
-    </Image>
-    <Image Include="DefaultResources\xp_throbber_s2.bmp">
-      <Filter>Resource Files\Default Resources</Filter>
-    </Image>
     <Image Include="DefaultResources\bg_videos_blue.bmp">
       <Filter>Resource Files\Default Resources</Filter>
     </Image>
@@ -275,20 +252,20 @@
     <Image Include="DefaultResources\bg_search_blue.bmp">
       <Filter>Resource Files\Default Resources</Filter>
     </Image>
-    <Image Include="DefaultResources\memphis\go_active.bmp">
-      <Filter>Resource Files\Default Resources</Filter>
+    <Image Include="DefaultResources\xp_go_active.bmp">
+      <Filter>Resource Files</Filter>
     </Image>
-    <Image Include="DefaultResources\memphis\go_inactive.bmp">
-      <Filter>Resource Files\Default Resources</Filter>
+    <Image Include="DefaultResources\xp_go_inactive.bmp">
+      <Filter>Resource Files</Filter>
     </Image>
-    <Image Include="DefaultResources\memphis\throbber_s0.bmp">
-      <Filter>Resource Files\Default Resources</Filter>
+    <Image Include="DefaultResources\xp_throbber_s0.bmp">
+      <Filter>Resource Files</Filter>
     </Image>
-    <Image Include="DefaultResources\memphis\throbber_s1.bmp">
-      <Filter>Resource Files\Default Resources</Filter>
+    <Image Include="DefaultResources\xp_throbber_s1.bmp">
+      <Filter>Resource Files</Filter>
     </Image>
-    <Image Include="DefaultResources\memphis\throbber_s2.bmp">
-      <Filter>Resource Files\Default Resources</Filter>
+    <Image Include="DefaultResources\xp_throbber_s2.bmp">
+      <Filter>Resource Files</Filter>
     </Image>
   </ItemGroup>
   <ItemGroup>

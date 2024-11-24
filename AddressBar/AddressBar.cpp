@@ -10,6 +10,7 @@
 #include <commoncontrols.h>
 #include "util/shell_helpers.h"
 #include "util/util.h"
+#include "util/settings_manager.h"
 
 #include "AddressBar.h"
 #include "winreg.h"
@@ -27,7 +28,6 @@ LRESULT AddressBar::OnCreate(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL &bHan
 
 	CEUtil::CESettings cS = CEUtil::GetCESettings();
 	m_showGoButton = cS.showGoButton;
-	m_theme = cS.theme;
 
 	if (m_goText == L"")
 	{
@@ -124,30 +124,11 @@ LRESULT AddressBar::CreateGoButton()
 	HINSTANCE moduleInstance = _AtlBaseModule.GetModuleInstance();
 
 	const TBBUTTON goButtonInfo[] = { {0, 1, TBSTATE_ENABLED, 0} };
-	HINSTANCE resourceInstance = _AtlBaseModule.GetResourceInstance();
-	int go_inactive_bitmap = IDB_10_GO_INACTIVE;
-	int go_active_bitmap = IDB_10_GO_ACTIVE;
-
-	if (m_theme == CLASSIC_EXPLORER_MEMPHIS)
-	{
-		go_inactive_bitmap = IDB_MEMPHIS_GO_INACTIVE;
-		go_active_bitmap = IDB_MEMPHIS_GO_ACTIVE;
-	}
-	else if (m_theme == CLASSIC_EXPLORER_2K)
-	{
-		go_inactive_bitmap = IDB_2K_GO_INACTIVE;
-		go_active_bitmap = IDB_2K_GO_ACTIVE;
-	}
-	else if (m_theme == CLASSIC_EXPLORER_XP)
-	{
-		go_inactive_bitmap = IDB_XP_GO_INACTIVE;
-		go_active_bitmap = IDB_XP_GO_ACTIVE;
-	}
 
 	m_himlGoInactive = ImageList_LoadImageW(
-		resourceInstance,
-		MAKEINTRESOURCEW(go_inactive_bitmap),
-		m_theme == CLASSIC_EXPLORER_MEMPHIS ? 18 : 20,
+		CEUtil::GetAppTheme()->GetResourceInstance(),
+		CEUtil::GetAppTheme()->FindBitmapResource(EThemeBitmap::GoInactive),
+		CEUtil::GetAppTheme()->GetBitmapSize(EThemeBitmap::GoInactive).cx,
 		0,
 		RGB(0, 0, 0),
 		IMAGE_BITMAP,
@@ -155,9 +136,9 @@ LRESULT AddressBar::CreateGoButton()
 	);
 
 	m_himlGoActive = ImageList_LoadImageW(
-		resourceInstance,
-		MAKEINTRESOURCEW(go_active_bitmap),
-		m_theme == CLASSIC_EXPLORER_MEMPHIS ? 18 : 20,
+		CEUtil::GetAppTheme()->GetResourceInstance(),
+		CEUtil::GetAppTheme()->FindBitmapResource(EThemeBitmap::GoActive),
+		CEUtil::GetAppTheme()->GetBitmapSize(EThemeBitmap::GoActive).cx,
 		0,
 		RGB(0, 0, 0),
 		IMAGE_BITMAP,
