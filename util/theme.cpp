@@ -14,7 +14,6 @@
 #include "simpleini/SimpleIni.h"
 
 #include "theme.h"
-#include <PathCch.h>
 
 #define DEFINE_WIDTH_HEIGHT_PROPERTIES(PROPERTY, WIDTH, HEIGHT)                          \
 	{ PROPERTY, EThemePartProperty::Width, EMappedPropertyDataType::Integer, WIDTH },    \
@@ -702,13 +701,13 @@ HRESULT CThemeLoader::ParseManifest(LPCWSTR szManifest)
 				wcscpy_s(szFilePath, _szThemeModulePath);
 				PathRemoveFileSpecW(szFilePath);
 
-				PathCchAppend(szFilePath, ARRAYSIZE(szFilePath) - 1, szBitmapFile);
+				PathAppendW(szFilePath, szBitmapFile);
 
 				wil::shared_hbitmap shbm = wil::shared_hbitmap(LoadThemeBitmap(szFilePath));
 
 				// Our enum is one-indexed, but the array is zero-indexed.
 				pFolderTheme->_rgshbmBitmapParts[(int)rbi.eVal - 1] = std::move(shbm);
-				wcscpy(pFolderTheme->_rgszBitmapPaths[(int)rbi.eVal - 1], szFilePath);
+				wcscpy_s(pFolderTheme->_rgszBitmapPaths[(int)rbi.eVal - 1], szFilePath);
 			}
 		}
 	}

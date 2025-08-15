@@ -20,9 +20,11 @@ namespace CEUtil
 
 #define CE_REGISTRY_PATH L"SOFTWARE\\kawapure\\ClassicExplorer"
 
+CSettingsManager *g_pSettingsManagerInstance = nullptr;
+
 HRESULT CSettingsManager::Initialize()
 {
-	m_pAppTheme = new CNativeTheme();
+	_pAppTheme = new CNativeTheme();
 
 	HKEY hKey;
 	LSTATUS ls = RegOpenKeyExW(HKEY_CURRENT_USER, CE_REGISTRY_PATH, 0, KEY_READ, &hKey);
@@ -64,13 +66,13 @@ HRESULT CSettingsManager::Initialize()
 	DWORD dwValueSize = sizeof(DWORD);
 
 	RegGetValueW(hKey, NULL, L"ShowGoButton", RRF_RT_REG_DWORD, NULL, &dwCurBoolProp, &dwValueSize);
-	m_fShowGoButton = (bool)dwCurBoolProp;
+	_fShowGoButton = (bool)dwCurBoolProp;
 
 	RegGetValueW(hKey, NULL, L"ShowAddressLabel", RRF_RT_REG_DWORD, NULL, &dwCurBoolProp, &dwValueSize);
-	m_fShowAddressLabel = (bool)dwCurBoolProp;
+	_fShowAddressLabel = (bool)dwCurBoolProp;
 
 	RegGetValueW(hKey, NULL, L"ShowFullAddress", RRF_RT_REG_DWORD, NULL, &dwCurBoolProp, &dwValueSize);
-	m_fShowFullAddress = (bool)dwCurBoolProp;
+	_fShowFullAddress = (bool)dwCurBoolProp;
 
 	RegCloseKey(hKey);
 

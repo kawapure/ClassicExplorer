@@ -21,8 +21,6 @@ class ATL_NO_VTABLE CBrandBand :
 		bool m_subclassedRebar = false;
 		bool m_alreadyDeletedSelf = false;
 		bool m_shouldManuallyCorrectHeight = false;
-		
-		ClassicExplorerTheme m_theme = CLASSIC_EXPLORER_2K;
 
 		// Width of the current bitmap.
 		int m_cxCurBmp = 0;

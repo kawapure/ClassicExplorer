@@ -26,8 +26,10 @@ LRESULT CAddressBar::OnCreate(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL &bHa
 
 	m_showGoButton = true;
 
+#if 0 // TODO: Migrate to new settings
 	CEUtil::CESettings cS = CEUtil::GetCESettings();
 	m_showGoButton = cS.showGoButton;
+#endif
 
 	if (m_goText == L"")
 	{
@@ -399,6 +401,7 @@ HRESULT CAddressBar::RefreshCurrentAddress()
 	// If the check if it's a known folder failed, then the path must be physical:
 	if (FAILED(isKnownFolder))
 	{
+#if 0 // TODO: Migrate to new settings
 		if (CEUtil::GetCESettings().showFullAddress)
 		{
 			BOOL hasPath = SUCCEEDED(
@@ -419,6 +422,7 @@ HRESULT CAddressBar::RefreshCurrentAddress()
 			}
 		}
 		else
+#endif
 		{
 			hr = GetCurrentFolderName(m_displayName, ARRAYSIZE(m_displayName));
 
@@ -516,12 +520,15 @@ HRESULT STDMETHODCALLTYPE CAddressBar::ShowFileNotFoundError(HRESULT hRet)
 	WCHAR szMessage[1024];
 	WCHAR szTitle[512];
 	HINSTANCE hInst = _AtlBaseModule.GetModuleInstance();
+#if 0 // Old theme code. TODO: Transition (probably not using the theme system as it's currently
+	  // inflexible for storing strings + bad for localisation.
 	if (m_theme == CLASSIC_EXPLORER_2K)
 	{
 		LoadStringW(hInst, IDS_NOTFOUND_TEXT_2K, szFormat, 512);
 		LoadStringW(hInst, IDS_NOTFOUND_TITLE_2K, szTitle, 512);
 	}
 	else
+#endif
 	{
 		LoadStringW(hInst, IDS_NOTFOUND_TEXT_XP, szFormat, 512);
 		LoadStringW(hInst, IDS_NOTFOUND_TITLE_XP, szTitle, 512);
@@ -795,7 +802,11 @@ HRESULT CAddressBar::GetCurrentFolderName(WCHAR *pszName, long length)
 	STRRET ret;
 	hr = pShellFolder->GetDisplayNameOf(
 		pidlChild,
+#if 0 // TODO: Migrate to new settings
 		CEUtil::GetCESettings().showFullAddress ? SHGDN_FORADDRESSBAR | SHGDN_FORPARSING : 0,
+#else
+		SHGDN_FORADDRESSBAR | SHGDN_FORPARSING,
+#endif
 		&ret
 	);
 

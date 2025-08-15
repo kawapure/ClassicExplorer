@@ -239,7 +239,6 @@
     <ClInclude Include="util\shell_undoc.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
-    <ClInclude Include="Throbber\ThrobberBand.h" />
     <ClInclude Include="themesdk.h" />
     <ClInclude Include="util\theme.h" />
     <ClInclude Include="util\util.h" />
@@ -314,7 +313,6 @@
     <ClCompile Include="simpleini\ConvertUTF.c" />
     <ClCompile Include="util\settings_manager.cpp" />
     <ClCompile Include="util\shell_helpers.cpp" />
-    <ClCompile Include="Throbber\ThrobberBand.cpp" />
     <ClCompile Include="util\theme.cpp" />
     <ClCompile Include="util\util.cpp" />
   </ItemGroup>

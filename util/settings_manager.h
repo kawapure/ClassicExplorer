@@ -36,21 +36,23 @@ struct CESettings
 	}
 };
 
+class CSettingsManager;
+
+extern CSettingsManager *g_pSettingsManagerInstance;
+
 class CSettingsManager
 {
 private:
-	bool m_fShowGoButton = false;
-	bool m_fShowAddressLabel = false;
-	bool m_fShowFullAddress = false;
-	ITheme *m_pAppTheme;
-
-	static CSettingsManager *s_pInstance;
+	bool _fShowGoButton = false;
+	bool _fShowAddressLabel = false;
+	bool _fShowFullAddress = false;
+	ITheme *_pAppTheme;
 
 public:
 	static HRESULT CreateInstance()
 	{
-		s_pInstance = new CSettingsManager();
-		s_pInstance->Initialize();
+		g_pSettingsManagerInstance = new CSettingsManager();
+		g_pSettingsManagerInstance->Initialize();
 		return S_OK;
 	}
 
@@ -58,33 +60,30 @@ public:
 
 	static inline CSettingsManager *GetInstance()
 	{
-		return s_pInstance;
+		return g_pSettingsManagerInstance;
 	}
 
 	inline bool ShouldShowGoButton()
 	{
-		return m_fShowGoButton;
+		return _fShowGoButton;
 	}
 
 	inline bool ShouldShowAddressLabel()
 	{
-		return m_fShowAddressLabel;
+		return _fShowAddressLabel;
 	}
 
 	inline bool ShouldShowFullAddress()
 	{
-		return m_fShowFullAddress;
+		return _fShowFullAddress;
 	}
 
 	inline ITheme *GetAppTheme()
 	{
-		return m_pAppTheme;
+		return _pAppTheme;
 	}
 };
 
 ITheme *GetAppTheme();
-
-CESettings GetCESettings();
-void WriteCESettings(CESettings& toWrite);
 
 }

@@ -535,9 +535,11 @@ STDMETHODIMP CBrandBand::SetSite(IUnknown *pUnkSite)
 
 	m_subclassedRebar = true;
 
+#if 0 // Old settings code
 	// Read settings from registry
 	CEUtil::CESettings cS = CEUtil::GetCESettings();
 	m_theme = cS.theme;
+#endif
 
 	// Explorer may initialise our position onto a separate rebar until the sizes are
 	// invalidated, so let's manually invalidate to correct the position:

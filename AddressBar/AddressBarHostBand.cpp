@@ -80,12 +80,14 @@ STDMETHODIMP CAddressBarHostBand::GetBandInfo(DWORD dwBandId, DWORD dwViewMode, 
 		}
 		if (pDbi->dwMask & DBIM_TITLE)
 		{
+#if 0 // TODO: Migrate to new settings
 			CEUtil::CESettings cS = CEUtil::GetCESettings();
 			if (cS.showAddressLabel == 0) //Show no label
 			{
 				wcscpy_s(pDbi->wszTitle, L"");
 				return S_OK;
 			}
+#endif
 			wcscpy_s(pDbi->wszTitle, m_addressText.c_str());
 			return S_OK;
 		}
