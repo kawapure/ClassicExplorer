@@ -10,6 +10,7 @@
 #include "dllmain.h"
 #include <commoncontrols.h>
 #include "util/util.h"
+#include "util/settings_manager.h"
 
 #include "BrandBand.h"
 
@@ -35,19 +36,12 @@ LRESULT CBrandBand::OnPaint(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL &bHand
 	destinationPoint.x = (clientRect.right - clientRect.left - m_cxCurBmp) / 2;
 	destinationPoint.y = (clientRect.bottom - clientRect.top - m_cyCurBmp) / 2;
 
-	//COLORREF background = m_theme == CLASSIC_EXPLORER_2K ? RGB(0, 0, 0) : RGB(255, 255, 255);
-	COLORREF background;
-	if (m_theme == CLASSIC_EXPLORER_2K || m_theme == CLASSIC_EXPLORER_MEMPHIS)
-	{
-		background = RGB(0, 0, 0);
-	}
-	else
-		background = RGB(255, 255, 255);
+	COLORREF crBackground = CEUtil::GetAppTheme()->GetColor(EThemeColor::ThrobberBackground);
 
-	SetBkColor(dc, background);
+	SetBkColor(dc, crBackground);
 
 	// Draw the background
-	HBRUSH bgBrush = CreateSolidBrush(background);
+	HBRUSH bgBrush = CreateSolidBrush(crBackground);
 	FillRect(dc, &clientRect, bgBrush);
 	DeleteObject(bgBrush);
 
@@ -102,7 +96,6 @@ LRESULT CBrandBand::OnClick(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHand
 	AppendMenuW(hMenu, (m_theme == CLASSIC_EXPLORER_2K ? MF_CHECKED : MF_UNCHECKED) | MF_STRING, m_theme == CLASSIC_EXPLORER_2K ? 0 : 7000, L"2K Skin");
 	AppendMenuW(hMenu, (m_theme == CLASSIC_EXPLORER_XP ? MF_CHECKED : MF_UNCHECKED) | MF_STRING, m_theme == CLASSIC_EXPLORER_XP ? 0 : 7001, L"XP Skin");
 	AppendMenuW(hMenu, (m_theme == CLASSIC_EXPLORER_10 ? MF_CHECKED : MF_UNCHECKED) | MF_STRING, m_theme == CLASSIC_EXPLORER_10 ? 0 : 7002, L"10 Skin");
-
 
 	AppendMenuW(hMenu, MF_SEPARATOR, 0, 0);
 
@@ -339,7 +332,7 @@ void CBrandBand::PerformRedrawCheck()
 	const int allowedRedrawsInTimeSpan = 50;
 
 	unsigned int previousRedrawTime = m_latestRedrawTime;
-	m_latestRedrawTime = GetTickCount();
+	m_latestRedrawTime = GetTickCount64();
 
 	if (m_latestRedrawTime < previousRedrawTime + checkDuration)
 	{

@@ -10,6 +10,7 @@
 #include "util/util.h"
 
 #include "util/shell_undoc.h"
+#include "util/settings_manager.h"
 #include "BrowserHelperObject.h"
 
 void BrowserHelperObject::Cleanup()
@@ -23,7 +24,7 @@ HRESULT BrowserHelperObject::_DoUpdateWatermark(HWND listView)
 {
 	HRESULT hr = S_OK;
 
-	int resourceId = 0;
+	EThemeBitmap eWatermarkBitmap = EThemeBitmap::Unknown;
 	bool shouldUse = false;
 
 	CComPtr<IShellView> pView;
@@ -36,36 +37,46 @@ HRESULT BrowserHelperObject::_DoUpdateWatermark(HWND listView)
 
 	if (curFolderType == FOLDERTYPEID_Pictures)
 	{
-		resourceId = IDB_BG_PICTURES_BLUE;
+		eWatermarkBitmap = EThemeBitmap::WatermarkPictures;
 		shouldUse = true;
 	}
 	else if (curFolderType == FOLDERTYPEID_Music)
 	{
-		resourceId = IDB_BG_MUSIC_BLUE;
+		eWatermarkBitmap = EThemeBitmap::WatermarkMusic;
 		shouldUse = true;
 	}
 	else if (curFolderType == FOLDERTYPEID_Videos)
 	{
-		resourceId = IDB_BG_VIDEOS_BLUE;
+		eWatermarkBitmap = EThemeBitmap::WatermarkVideos;
 		shouldUse = true;
+	}
+
+	// Disable the watermark if the theme specifies to, if the user specifies to, or if the
+	// user uses classic theme and doesn't explicitly specify to:
+	if (!CEUtil::GetAppTheme()->GetBool(EThemeBool::EnableListViewWatermarks))
+	{
+		shouldUse = false;
 	}
 
 	if (shouldUse)
 	{
-		HBITMAP bitmap = LoadBitmapW(
-			_AtlBaseModule.GetResourceInstance(),
-			MAKEINTRESOURCEW(resourceId)
-		);
+		wil::shared_hbitmap hbm = CEUtil::GetAppTheme()->GetBitmap(eWatermarkBitmap);
+
+		if (!hbm)
+		{
+			// Remove the background:
+			SendMessageW(listView, LVM_SETBKIMAGEW, NULL, NULL);
+			return E_FAIL;
+		}
 
 		LVBKIMAGEW bkImage = { 0 };
 		bkImage.ulFlags = LVBKIF_TYPE_WATERMARK;
 		bkImage.xOffsetPercent = 100;
 		bkImage.yOffsetPercent = 100;
-		bkImage.hbm = bitmap;
+		bkImage.hbm = hbm.get();
 
 		if (!SendMessageW(listView, LVM_SETBKIMAGEW, NULL, (LPARAM)&bkImage))
 		{
-			DeleteObject(bitmap);
 			WCHAR buffer[128];
 			swprintf_s(buffer, L"Failed to apply background image on HWND: %x", listView);
 			MessageBoxW(NULL, buffer, L"Fuck you", MB_OK);

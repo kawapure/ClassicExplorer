@@ -11,7 +11,7 @@
 #include "util/util.h"
 #include <string>
 
-class AddressBar : public CWindowImpl<AddressBar>
+class CAddressBar : public CWindowImpl<CAddressBar>
 {
 	protected: // Class members:
 		CWindow m_toolbar = NULL;
@@ -35,7 +35,7 @@ class AddressBar : public CWindowImpl<AddressBar>
 		// provides useful events.
 		CComPtr<IWebBrowser2> m_pWebBrowser = NULL;
 
-		friend class AddressBarHostBand;
+		friend class CAddressBarHostBand;
 
 	public: // Window setup:
 		DECLARE_WND_CLASS(L"ClassicExplorer.AddressBar")
@@ -60,6 +60,7 @@ class AddressBar : public CWindowImpl<AddressBar>
 		HRESULT HandleNavigate();
 		HRESULT RefreshCurrentAddress();
 		BOOL GetCurrentAddressText(CComHeapPtr<WCHAR> &pszText);
+		HRESULT STDMETHODCALLTYPE ShowFileNotFoundError(HRESULT hRet);
 		HRESULT Execute();
 
 	protected: // Message handlers:

@@ -78,7 +78,7 @@ static LPCWSTR GetIniPropertyName(EThemePartProperty eProperty)
 std::tuple<HRESULT, std::unique_ptr<ThemePropertyMap> >
 CThemeBase::FindProperty(int ePartName, EThemePartProperty eProperty)
 {
-	for (ThemePropertyMap &propMap : m_properties)
+	for (ThemePropertyMap &propMap : _properties)
 	{
 		if (propMap.ePartName == ePartName && propMap.ePropertyName == eProperty)
 		{
@@ -159,6 +159,20 @@ CNativeTheme::CNativeTheme()
 {
 }
 
+bool CNativeTheme::GetBool(EThemeBool eBool)
+{
+	switch (eBool)
+	{
+		case EThemeBool::EnableListViewWatermarks:
+		{
+			// Windows XP default:
+			return true;
+		}
+	}
+
+	return false;
+}
+
 COLORREF CNativeTheme::GetColor(EThemeColor colorName)
 {
 	switch (colorName)
@@ -167,7 +181,6 @@ COLORREF CNativeTheme::GetColor(EThemeColor colorName)
 		{
 			// Windows XP default background.
 			return RGB(0, 0, 0);
-			break;
 		}
 	}
 
@@ -288,11 +301,24 @@ CForeignTheme::CForeignTheme()
 {
 	USE_THEME_DEFINITION_SCOPE;
 
-	m_properties.insert(
-		m_properties.end(), 
+	_properties.insert(
+		_properties.end(), 
 		&kThemePropertyDefaults[0], 
 		&kThemePropertyDefaults[ARRAYSIZE(kThemePropertyDefaults)]
 	);
+}
+
+bool CForeignTheme::GetBool(EThemeBool eBool)
+{
+	switch (eBool)
+	{
+		case EThemeBool::EnableListViewWatermarks:
+		{
+			return _fExplorerWatermarksEnabled;
+		}
+	}
+
+	return false;
 }
 
 COLORREF CForeignTheme::GetColor(EThemeColor colorName)
@@ -336,6 +362,7 @@ LPCWSTR CForeignTheme::FindBitmapResource(EThemeBitmap bitmapName)
 {
 	LPCWSTR szResourceName = nullptr;
 
+	// Default fallback names:
 	switch (bitmapName)
 	{
 		case EThemeBitmap::GoActive:
@@ -393,42 +420,51 @@ LPCWSTR CForeignTheme::FindBitmapResource(EThemeBitmap bitmapName)
 		}
 	}
 
+	// If the INI part has a mapped name from the INI file, then we'll use
+	// that instead.
+	auto pUserDefinedFile = _mapFiles.find(GetIniPartName((int)bitmapName));
+	if (pUserDefinedFile != _mapFiles.end())
+	{
+		szResourceName = pUserDefinedFile->second.c_str();
+	}
+
 	return szResourceName;
 }
 
 CThemeLoader::CThemeLoader()
 {
-	m_pTheme = std::make_unique<CForeignTheme>();
-	m_pIniReader = std::make_unique<CSimpleIniW>();
+	_spTheme = std::make_unique<CForeignTheme>();
+	_spIniReader = std::make_unique<CSimpleIniW>();
 }
 
 HRESULT CThemeLoader::LoadForeignTheme(LPCWSTR szThemePath)
 {
-	m_hModule = LoadLibraryExW(szThemePath, nullptr, LOAD_LIBRARY_AS_IMAGE_RESOURCE | LOAD_LIBRARY_AS_DATAFILE);
+	_hModule = LoadLibraryExW(szThemePath, nullptr, LOAD_LIBRARY_AS_IMAGE_RESOURCE | LOAD_LIBRARY_AS_DATAFILE);
 
-	if (!m_hModule)
+	if (!_hModule)
 	{
-		return E_FAIL;
+		return HRESULT_FROM_WIN32(GetLastError());
 	}
 
-	HRSRC rcManifest = FindResourceW(m_hModule, L"CETHEME_MANIFEST", RT_RCDATA);
+	HRSRC rcManifest = FindResourceW(_hModule, L"CETHEME_MANIFEST", RT_RCDATA);
 
 	if (!rcManifest)
 	{
-		return E_FAIL;
+		RETURN_HR_MSG(HRESULT_FROM_WIN32(GetLastError()), "Failed to find CETHEME_MANIFEST resource in theme.");
 	}
 
-	HGLOBAL hManifest = LoadResource(m_hModule, rcManifest);
+	HGLOBAL hManifest = LoadResource(_hModule, rcManifest);
 
 	if (!hManifest)
 	{
-		return E_FAIL;
+		RETURN_HR_MSG(HRESULT_FROM_WIN32(GetLastError()), "Failed to load CETHEME_MANIFEST resource.");
 	}
 
 	LPCWSTR szManifest = (LPCWSTR)LockResource(hManifest);
 
 	if (FAILED(ParseManifest(szManifest)))
 	{
+		// ParseManifest logs failures itself, so we don't bother here.
 		return E_FAIL;
 	}
 
@@ -437,32 +473,88 @@ HRESULT CThemeLoader::LoadForeignTheme(LPCWSTR szThemePath)
 
 HRESULT CThemeLoader::ParseManifest(LPCWSTR szManifest)
 {
-	SI_Error rc = m_pIniReader->LoadData((LPCSTR)szManifest);
+	SI_Error rc = _spIniReader->LoadData((LPCSTR)szManifest);
 
 	if (FAILED(rc))
 	{
-		return E_FAIL;
+		RETURN_HR_MSG(rc == SI_NOMEM ? E_OUTOFMEMORY : E_FAIL, "Failed to parse manifest INI.");
 	}
 
-	DWORD dwVersion = m_pIniReader->GetLongValue(
+	DWORD dwVersion = _spIniReader->GetLongValue(
 		L"ClassicExplorerThemeManifest",
-		L"version",
+		L"ManifestVersion",
 		0
 	);
 
 	if (dwVersion == 0)
 	{
 		// Invalid manifest.
-		return E_FAIL;
+		RETURN_HR_MSG(E_FAIL, "Attempted to a theme with an invalid version.");
 	}
 
-	bool fEnableWatermarks = m_pIniReader->GetBoolValue(
+	//
+	// Parse theme metadata:
+	//
+
+	LPCWSTR pszThemeName = _spIniReader->GetValue(
+		L"ClassicExplorerThemeManifest",
+		L"Name",
+		L"(unspecified)"
+	);
+	_spTheme->_spszName = pszThemeName; // Copy so the lifetime exceeds INI parser.
+
+	LPCWSTR pszThemeDescription = _spIniReader->GetValue(
+		L"ClassicExplorerThemeManifest",
+		L"Description",
+		L"(unspecified)"
+	);
+	_spTheme->_spszDescription = pszThemeDescription;
+
+	LPCWSTR pszThemeAuthor = _spIniReader->GetValue(
+		L"ClassicExplorerThemeManifest",
+		L"Author",
+		L"(unspecified)"
+	);
+	_spTheme->_spszAuthor = pszThemeAuthor;
+
+	LPCWSTR pszThemeVersion = _spIniReader->GetValue(
+		L"ClassicExplorerThemeManifest",
+		L"Version",
+		L"0" // Looks nicer as a fallback value.
+	);
+	_spTheme->_spszVersion = pszThemeVersion;
+
+	//
+	// If the theme has a "Files" section, then we must copy all entries of it to the
+	// foreign theme in order to be able to access anything declared under there after
+	// the theme loader is out of the picture.
+	//
+
+	if (_spIniReader->SectionExists(L"Files"))
+	{
+		auto pSections = _spIniReader->GetSection(L"Files");
+		
+		for (auto section = pSections->begin(); section != pSections->end(); ++section)
+		{
+			// We need to make copies of these strings so that they outlast the INI parser.
+			std::wstring spszKey = section->first.pItem;
+			std::wstring spszValue = section->second;
+
+			_spTheme->_mapFiles.insert(std::move(spszKey), std::move(spszValue));
+		}
+	}
+
+	//
+	// Parse theme properties:
+	//
+
+	bool fEnableWatermarks = _spIniReader->GetBoolValue(
 		L"Properties",
 		L"EnableListViewWatermarks",
 		false
 	);
 
-	m_pTheme->m_fExplorerWatermarksEnabled = fEnableWatermarks;
+	_spTheme->_fExplorerWatermarksEnabled = fEnableWatermarks;
 
 	// Iterate over EThemeColor values:
 	for (int eColor = (int)EThemePartType::Color; eColor < (int)EThemeColor::End; eColor++)
@@ -496,13 +588,13 @@ HRESULT CThemeLoader::InstallProperty(int ePart, EThemePartProperty eProperty)
 		return E_FAIL;
 	}
 
-	std::wstring fullIniPath = std::wstring(szPartName).append(L".").append(szPropertyName);
+	std::wstring spszFullIniPath = std::wstring(szPartName).append(L".").append(szPropertyName);
 
 	switch (eProperty)
 	{
 		case EThemePartProperty::Color:
 		{
-			return _InstallColorProperty(ePart, std::make_unique<std::wstring>(fullIniPath));
+			return _InstallColorProperty(ePart, std::make_unique<std::wstring>(spszFullIniPath));
 		}
 
 		case EThemePartProperty::Width:
@@ -510,7 +602,7 @@ HRESULT CThemeLoader::InstallProperty(int ePart, EThemePartProperty eProperty)
 			return _InstallIntegerProperty(
 				ePart, 
 				EThemePartProperty::Width, 
-				std::make_unique<std::wstring>(fullIniPath)
+				std::make_unique<std::wstring>(spszFullIniPath)
 			);
 		}
 
@@ -519,7 +611,7 @@ HRESULT CThemeLoader::InstallProperty(int ePart, EThemePartProperty eProperty)
 			return _InstallIntegerProperty(
 				ePart,
 				EThemePartProperty::Height,
-				std::make_unique<std::wstring>(fullIniPath)
+				std::make_unique<std::wstring>(spszFullIniPath)
 			);
 		}
 	}
@@ -529,7 +621,7 @@ HRESULT CThemeLoader::InstallProperty(int ePart, EThemePartProperty eProperty)
 
 HRESULT CThemeLoader::_InstallColorProperty(int ePart, std::unique_ptr<std::wstring> pIniPath)
 {
-	LPCWSTR szIniColorValue = m_pIniReader->GetValue(
+	LPCWSTR szIniColorValue = _spIniReader->GetValue(
 		L"Properties",
 		pIniPath->c_str(),
 		nullptr
@@ -546,7 +638,7 @@ HRESULT CThemeLoader::_InstallColorProperty(int ePart, std::unique_ptr<std::wstr
 
 	if (SUCCEEDED(hrColor))
 	{
-		m_pTheme->SetProperty(ePart, EThemePartProperty::Color, crColor);
+		_spTheme->SetProperty(ePart, EThemePartProperty::Color, crColor);
 		return S_OK;
 	}
 
@@ -555,18 +647,18 @@ HRESULT CThemeLoader::_InstallColorProperty(int ePart, std::unique_ptr<std::wstr
 
 HRESULT CThemeLoader::_InstallIntegerProperty(int ePart, EThemePartProperty eProperty, std::unique_ptr<std::wstring> pIniPath)
 {
-	if (!m_pIniReader->KeyExists(L"Properties", pIniPath->c_str()))
+	if (!_spIniReader->KeyExists(L"Properties", pIniPath->c_str()))
 	{
 		return E_FAIL;
 	}
 
-	int iIniValue = m_pIniReader->GetLongValue(
+	int iIniValue = _spIniReader->GetLongValue(
 		L"Properties",
 		pIniPath->c_str(),
 		0
 	);
 
-	m_pTheme->SetProperty(ePart, eProperty, iIniValue);
+	_spTheme->SetProperty(ePart, eProperty, iIniValue);
 
 	return S_OK;
 }
