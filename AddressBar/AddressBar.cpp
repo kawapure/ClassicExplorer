@@ -125,25 +125,9 @@ LRESULT CAddressBar::CreateGoButton()
 
 	const TBBUTTON goButtonInfo[] = { {0, 1, TBSTATE_ENABLED, 0} };
 
-	m_himlGoInactive = ImageList_LoadImageW(
-		CEUtil::GetAppTheme()->GetResourceInstance(),
-		CEUtil::GetAppTheme()->FindBitmapResource(EThemeBitmap::GoInactive),
-		CEUtil::GetAppTheme()->GetBitmapSize(EThemeBitmap::GoInactive).cx,
-		0,
-		RGB(0, 0, 0),
-		IMAGE_BITMAP,
-		LR_CREATEDIBSECTION
-	);
+	m_himlGoInactive = CEUtil::GetAppTheme()->LoadImageListFromBitmap(EThemeBitmap::GoInactive);
 
-	m_himlGoActive = ImageList_LoadImageW(
-		CEUtil::GetAppTheme()->GetResourceInstance(),
-		CEUtil::GetAppTheme()->FindBitmapResource(EThemeBitmap::GoActive),
-		CEUtil::GetAppTheme()->GetBitmapSize(EThemeBitmap::GoActive).cx,
-		0,
-		RGB(0, 0, 0),
-		IMAGE_BITMAP,
-		LR_CREATEDIBSECTION
-	);
+	m_himlGoActive = CEUtil::GetAppTheme()->LoadImageListFromBitmap(EThemeBitmap::GoActive);
 
 	m_goButton = CreateWindowEx(
 		WS_EX_TOOLWINDOW,

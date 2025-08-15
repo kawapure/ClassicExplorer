@@ -14,6 +14,7 @@
 #include "simpleini/SimpleIni.h"
 
 #include "theme.h"
+#include <PathCch.h>
 
 #define DEFINE_WIDTH_HEIGHT_PROPERTIES(PROPERTY, WIDTH, HEIGHT)                          \
 	{ PROPERTY, EThemePartProperty::Width, EMappedPropertyDataType::Integer, WIDTH },    \
@@ -29,7 +30,32 @@
 	constexpr EMappedPropertyDataType Float = EMappedPropertyDataType::Float;      \
 	constexpr EMappedPropertyDataType String = EMappedPropertyDataType::String;
 
-static const ThemePropertyMap kThemePropertyDefaults[] = {
+#define IS_VALID_PROPERTY_ENUM(e, ENUM, BASE) ((int)e >= (int)ENUM::BASE && (int)e < (int)ENUM::End)
+#define IS_VALID_BITMAP(e) IS_VALID_PROPERTY_ENUM(e, EThemeBitmap, GoActive)
+
+struct ThemeBitmapInfo
+{
+	EThemeBitmap eVal;
+	LPCWSTR szValName;
+	LPCWSTR szDefaultResourceName;
+};
+
+#define DEFINE_THEME_BITMAP(eBitmap, szDefaultResourceName) \
+	{ EThemeBitmap:: eBitmap, L#eBitmap, L##szDefaultResourceName },
+
+static const ThemeBitmapInfo c_rgThemeBitmapInfo[(int)EThemeBitmap::End - (int)EThemePartType::Bitmap] = {
+	DEFINE_THEME_BITMAP(GoActive,          "CETHEME_BMP_GO_ACTIVE")
+	DEFINE_THEME_BITMAP(GoInactive,        "CETHEME_BMP_GO_INACTIVE")
+	DEFINE_THEME_BITMAP(ThrobberSmall,     "CETHEME_BMP_THROBBER_SIZE_SMALL")
+	DEFINE_THEME_BITMAP(ThrobberMedium,    "CETHEME_BMP_THROBBER_SIZE_MID")
+	DEFINE_THEME_BITMAP(ThrobberLarge,     "CETHEME_BMP_THROBBER_SIZE_LARGE")
+	DEFINE_THEME_BITMAP(WatermarkMusic,    "CETHEME_BMP_BG_MUSIC")
+	DEFINE_THEME_BITMAP(WatermarkSearch,   "CETHEME_BMP_BG_SEARCH")
+	DEFINE_THEME_BITMAP(WatermarkVideos,   "CETHEME_BMP_BG_VIDEOS")
+	DEFINE_THEME_BITMAP(WatermarkPictures, "CETHEME_BMP_BG_PICTURES")
+};
+
+static const ThemePropertyMap c_rgThemePropertyDefaults[] = {
 	{ (int)EThemeColor::ThrobberBackground, EThemePartProperty::Color, EMappedPropertyDataType::Integer, (int)RGB(0, 0, 0) },
 	DEFINE_WIDTH_HEIGHT_PROPERTIES((int)EThemeBitmap::GoActive, 20, 20),
 	DEFINE_WIDTH_HEIGHT_PROPERTIES((int)EThemeBitmap::GoInactive, 20, 20),
@@ -244,6 +270,25 @@ SIZE CNativeTheme::GetBitmapSize(EThemeBitmap eBitmap)
 	return { 0, 0 };
 }
 
+/**
+ * GetBitmapMaskColor: Gets the mask colour of a theme bitmap.
+ *
+ * For the native theme, we just hardcode the size of bitmaps.
+ */
+COLORREF CNativeTheme::GetBitmapMaskColor(EThemeBitmap eBitmap)
+{
+	switch (eBitmap)
+	{
+		case EThemeBitmap::GoActive:
+		case EThemeBitmap::GoInactive:
+		{
+			return RGB(0, 0, 0);
+		}
+	}
+
+	return RGB(0, 0, 0);
+}
+
 LPCWSTR CNativeTheme::FindBitmapResource(EThemeBitmap bitmapName)
 {
 	switch (bitmapName)
@@ -297,18 +342,31 @@ LPCWSTR CNativeTheme::FindBitmapResource(EThemeBitmap bitmapName)
 	return nullptr;
 }
 
-CForeignTheme::CForeignTheme()
+HIMAGELIST CNativeTheme::LoadImageListFromBitmap(EThemeBitmap eBitmap)
+{
+	return ImageList_LoadImageW(
+		GetResourceInstance(),
+		FindBitmapResource(eBitmap),
+		GetBitmapSize(eBitmap).cx,
+		0,
+		GetBitmapMaskColor(eBitmap),
+		IMAGE_BITMAP,
+		LR_CREATEDIBSECTION
+	);
+}
+
+CForeignThemeBase::CForeignThemeBase()
 {
 	USE_THEME_DEFINITION_SCOPE;
 
 	_properties.insert(
-		_properties.end(), 
-		&kThemePropertyDefaults[0], 
-		&kThemePropertyDefaults[ARRAYSIZE(kThemePropertyDefaults)]
+		_properties.end(),
+		&c_rgThemePropertyDefaults[0],
+		&c_rgThemePropertyDefaults[ARRAYSIZE(c_rgThemePropertyDefaults)]
 	);
 }
 
-bool CForeignTheme::GetBool(EThemeBool eBool)
+bool CForeignThemeBase::GetBool(EThemeBool eBool)
 {
 	switch (eBool)
 	{
@@ -321,7 +379,7 @@ bool CForeignTheme::GetBool(EThemeBool eBool)
 	return false;
 }
 
-COLORREF CForeignTheme::GetColor(EThemeColor colorName)
+COLORREF CForeignThemeBase::GetColor(EThemeColor colorName)
 {
 	switch (colorName)
 	{
@@ -343,7 +401,39 @@ COLORREF CForeignTheme::GetColor(EThemeColor colorName)
 	return RGB(0, 0, 0);
 }
 
-wil::shared_hbitmap CForeignTheme::GetBitmap(EThemeBitmap bitmapName)
+SIZE CForeignThemeBase::GetBitmapSize(EThemeBitmap eBitmap)
+{
+	HRESULT hr = E_FAIL;
+	int iWidth = 0;
+	std::tie(hr, iWidth) = GetIntegerProperty((int)eBitmap, EThemePartProperty::Width);
+
+	HRESULT hr2 = E_FAIL;
+	int iHeight = 0;
+	std::tie(hr2, iHeight) = GetIntegerProperty((int)eBitmap, EThemePartProperty::Height);
+
+	if (SUCCEEDED(hr) || SUCCEEDED(hr2))
+	{
+		return { iWidth, iHeight };
+	}
+
+	return { 0, 0 };
+}
+
+COLORREF CForeignThemeBase::GetBitmapMaskColor(EThemeBitmap eBitmap)
+{
+	HRESULT hr = E_FAIL;
+	int iValue = 0;
+	std::tie(hr, iValue) = GetIntegerProperty((int)eBitmap, EThemePartProperty::MaskColor);
+
+	if (SUCCEEDED(hr))
+	{
+		return (COLORREF)iValue;
+	}
+
+	return RGB(0, 0, 0);
+}
+
+wil::shared_hbitmap CForeignThemeDll::GetBitmap(EThemeBitmap bitmapName)
 {
 	LPCWSTR szBitmapName = FindBitmapResource(bitmapName);
 
@@ -358,66 +448,15 @@ wil::shared_hbitmap CForeignTheme::GetBitmap(EThemeBitmap bitmapName)
 	return nullptr;
 }
 
-LPCWSTR CForeignTheme::FindBitmapResource(EThemeBitmap bitmapName)
+LPCWSTR CForeignThemeDll::FindBitmapResource(EThemeBitmap bitmapName)
 {
 	LPCWSTR szResourceName = nullptr;
 
 	// Default fallback names:
-	switch (bitmapName)
+	for (const ThemeBitmapInfo &rbi : c_rgThemeBitmapInfo) if (rbi.eVal == bitmapName)
 	{
-		case EThemeBitmap::GoActive:
-		{
-			szResourceName = L"CETHEME_BMP_GO_ACTIVE";
-			break;
-		}
-
-		case EThemeBitmap::GoInactive:
-		{
-			szResourceName = L"CETHEME_BMP_GO_INACTIVE";
-			break;
-		}
-
-		case EThemeBitmap::ThrobberLarge:
-		{
-			szResourceName = L"CETHEME_BMP_THROBBER_SIZE_LARGE";
-			break;
-		}
-
-		case EThemeBitmap::ThrobberMedium:
-		{
-			szResourceName = L"CETHEME_BMP_THROBBER_SIZE_MID";
-			break;
-		}
-
-		case EThemeBitmap::ThrobberSmall:
-		{
-			szResourceName = L"CETHEME_BMP_THROBBER_SIZE_SMALL";
-			break;
-		}
-
-		case EThemeBitmap::WatermarkMusic:
-		{
-			szResourceName = L"CETHEME_BMP_BG_MUSIC";
-			break;
-		}
-
-		case EThemeBitmap::WatermarkSearch:
-		{
-			szResourceName = L"CETHEME_BMP_BG_SEARCH";
-			break;
-		}
-
-		case EThemeBitmap::WatermarkVideos:
-		{
-			szResourceName = L"CETHEME_BMP_BG_VIDEOS";
-			break;
-		}
-
-		case EThemeBitmap::WatermarkPictures:
-		{
-			szResourceName = L"CETHEME_BMP_BG_PICTURES";
-			break;
-		}
+		szResourceName = rbi.szDefaultResourceName;
+		break;
 	}
 
 	// If the INI part has a mapped name from the INI file, then we'll use
@@ -431,14 +470,113 @@ LPCWSTR CForeignTheme::FindBitmapResource(EThemeBitmap bitmapName)
 	return szResourceName;
 }
 
+HIMAGELIST CForeignThemeDll::LoadImageListFromBitmap(EThemeBitmap eBitmap)
+{
+	// Same as CNativeTheme implementation.
+	return ImageList_LoadImageW(
+		GetResourceInstance(),
+		FindBitmapResource(eBitmap),
+		GetBitmapSize(eBitmap).cx,
+		0,
+		GetBitmapMaskColor(eBitmap),
+		IMAGE_BITMAP,
+		LR_CREATEDIBSECTION
+	);
+}
+
+LPCWSTR CForeignThemeFolder::FindBitmapResource(EThemeBitmap bitmapName)
+{
+	if (IS_VALID_BITMAP(bitmapName))
+	{
+		return _rgszBitmapPaths[(int)bitmapName - 1];
+	}
+
+	return nullptr;
+}
+
+wil::shared_hbitmap CForeignThemeFolder::GetBitmap(EThemeBitmap bitmapName)
+{
+	if (IS_VALID_BITMAP(bitmapName))
+	{
+		return _rgshbmBitmapParts[(int)bitmapName - 1];
+	}
+
+	return nullptr;
+}
+
+HIMAGELIST CForeignThemeFolder::LoadImageListFromBitmap(EThemeBitmap eBitmap)
+{
+	return ImageList_LoadImageW(
+		NULL,
+		FindBitmapResource(eBitmap),
+		GetBitmapSize(eBitmap).cx,
+		0,
+		GetBitmapMaskColor(eBitmap),
+		IMAGE_BITMAP,
+		LR_CREATEDIBSECTION | LR_LOADFROMFILE
+	);
+}
+
 CThemeLoader::CThemeLoader()
 {
-	_spTheme = std::make_unique<CForeignTheme>();
 	_spIniReader = std::make_unique<CSimpleIniW>();
 }
 
 HRESULT CThemeLoader::LoadForeignTheme(LPCWSTR szThemePath)
 {
+	LPCWSTR szExt = PathFindExtensionW(szThemePath);
+	
+	if (wcscmp(szExt, L".dll") == 0)
+	{
+		return LoadForeignThemeFromDll(szThemePath);
+	}
+
+	return LoadForeignThemeFromFolder(szThemePath);
+}
+
+HRESULT CThemeLoader::LoadForeignThemeFromFolder(LPCWSTR szThemeManifestPath)
+{
+	_szThemeModulePath = szThemeManifestPath;
+	_spTheme = std::make_unique<CForeignThemeFolder>();
+
+	wil::unique_hfile shFile = wil::unique_hfile(CreateFileW(
+		szThemeManifestPath,
+		GENERIC_READ,
+		FILE_SHARE_READ,
+		NULL,
+		OPEN_EXISTING,
+		FILE_ATTRIBUTE_NORMAL,
+		NULL
+	));
+
+	RETURN_HR_IF_MSG(E_ACCESSDENIED, shFile.get() == INVALID_HANDLE_VALUE, "Failed to open foreign theme manifest file.");
+
+	LARGE_INTEGER liFileSize;
+	if (!GetFileSizeEx(shFile.get(), &liFileSize))
+	{
+		RETURN_HR_MSG(E_FAIL, "Failed to get manifest file size.");
+	}
+
+	std::unique_ptr<WCHAR> spszManifest = std::make_unique<WCHAR>(liFileSize.QuadPart);
+
+	if (!ReadFile(shFile.get(), spszManifest.get(), liFileSize.QuadPart, NULL, NULL))
+	{
+		RETURN_HR_MSG(E_FAIL, "Failed to read manifest file.");
+	}
+
+	if (FAILED(ParseManifest(spszManifest.get())))
+	{
+		// ParseManifest logs failures itself, so we don't bother here.
+		return E_FAIL;
+	}
+
+	return S_OK;
+}
+
+HRESULT CThemeLoader::LoadForeignThemeFromDll(LPCWSTR szThemePath)
+{
+	_szThemeModulePath = szThemePath;
+	_spTheme = std::make_unique<CForeignThemeDll>();
 	_hModule = LoadLibraryExW(szThemePath, nullptr, LOAD_LIBRARY_AS_IMAGE_RESOURCE | LOAD_LIBRARY_AS_DATAFILE);
 
 	if (!_hModule)
@@ -532,16 +670,52 @@ HRESULT CThemeLoader::ParseManifest(LPCWSTR szManifest)
 
 	if (_spIniReader->SectionExists(L"Files"))
 	{
-		auto pSections = _spIniReader->GetSection(L"Files");
-		
-		for (auto section = pSections->begin(); section != pSections->end(); ++section)
+		if (_spTheme->GetForeignThemeType() == EForeignThemeType::Dll)
 		{
-			// We need to make copies of these strings so that they outlast the INI parser.
-			std::wstring spszKey = section->first.pItem;
-			std::wstring spszValue = section->second;
+			auto pSections = _spIniReader->GetSection(L"Files");
 
-			_spTheme->_mapFiles.insert(std::move(spszKey), std::move(spszValue));
+			for (auto section = pSections->begin(); section != pSections->end(); ++section)
+			{
+				// We need to make copies of these strings so that they outlast the INI parser.
+				std::wstring spszKey = section->first.pItem;
+				std::wstring spszValue = section->second;
+
+				((CForeignThemeDll *)_spTheme.get())->_mapFiles.emplace(std::move(spszKey), std::move(spszValue));
+			}
 		}
+		else // Folder theme
+		{
+			CForeignThemeFolder *pFolderTheme = (CForeignThemeFolder *)_spTheme.get();
+
+			// Load every bitmap from the bitmap list:
+			for (const ThemeBitmapInfo &rbi : c_rgThemeBitmapInfo)
+			{
+				LPCWSTR szBitmapFile = _spIniReader->GetValue(L"Files", rbi.szValName);
+
+				if (!szBitmapFile)
+				{
+					LOG_HR_MSG(E_FAIL, "Nonfatal failure: Theme does not specify bitmap %s", rbi.szValName);
+					continue;
+				}
+
+				WCHAR szFilePath[MAX_PATH] = { 0 };
+				wcscpy_s(szFilePath, _szThemeModulePath);
+				PathRemoveFileSpecW(szFilePath);
+
+				PathCchAppend(szFilePath, ARRAYSIZE(szFilePath) - 1, szBitmapFile);
+
+				wil::shared_hbitmap shbm = wil::shared_hbitmap(LoadThemeBitmap(szFilePath));
+
+				// Our enum is one-indexed, but the array is zero-indexed.
+				pFolderTheme->_rgshbmBitmapParts[(int)rbi.eVal - 1] = std::move(shbm);
+				wcscpy(pFolderTheme->_rgszBitmapPaths[(int)rbi.eVal - 1], szFilePath);
+			}
+		}
+	}
+	else if (_spTheme->GetForeignThemeType() == EForeignThemeType::Folder)
+	{
+		// It is illegal for a folder theme to not have a file map.
+		RETURN_HR_MSG(E_UNEXPECTED, "Attempted to load folder theme without a file map.");
 	}
 
 	//
@@ -567,9 +741,15 @@ HRESULT CThemeLoader::ParseManifest(LPCWSTR szManifest)
 	{
 		InstallProperty(eBitmap, EThemePartProperty::Width);
 		InstallProperty(eBitmap, EThemePartProperty::Height);
+		InstallProperty(eBitmap, EThemePartProperty::MaskColor);
 	}
 
 	return S_OK;
+}
+
+HBITMAP CThemeLoader::LoadThemeBitmap(LPCWSTR szBitmapPath)
+{
+	return (HBITMAP)LoadImageW(NULL, szBitmapPath, IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE);
 }
 
 HRESULT CThemeLoader::InstallProperty(int ePart, EThemePartProperty eProperty)
@@ -593,24 +773,17 @@ HRESULT CThemeLoader::InstallProperty(int ePart, EThemePartProperty eProperty)
 	switch (eProperty)
 	{
 		case EThemePartProperty::Color:
+		case EThemePartProperty::MaskColor:
 		{
 			return _InstallColorProperty(ePart, std::make_unique<std::wstring>(spszFullIniPath));
 		}
 
 		case EThemePartProperty::Width:
-		{
-			return _InstallIntegerProperty(
-				ePart, 
-				EThemePartProperty::Width, 
-				std::make_unique<std::wstring>(spszFullIniPath)
-			);
-		}
-
 		case EThemePartProperty::Height:
 		{
 			return _InstallIntegerProperty(
-				ePart,
-				EThemePartProperty::Height,
+				ePart, 
+				eProperty, 
 				std::make_unique<std::wstring>(spszFullIniPath)
 			);
 		}

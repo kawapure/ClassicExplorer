@@ -88,6 +88,7 @@ LRESULT CBrandBand::OnEraseBackground(UINT uMsg, WPARAM wParam, LPARAM lParam, B
 
 LRESULT CBrandBand::OnClick(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled)
 {
+#if 0 // Old settings code which is quite frankly total dogshit.
 	CEUtil::CESettings currentSettings = CEUtil::GetCESettings();
 
 	HMENU hMenu = CreatePopupMenu();
@@ -141,6 +142,7 @@ LRESULT CBrandBand::OnClick(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHand
 	}
 	MessageBeep(0);
 	MessageBox(L"Open a new file explorer window to see the changes.");
+#endif
 	return S_OK;
 }
 
@@ -155,70 +157,18 @@ LRESULT CBrandBand::LoadBitmapForSize()
 	DeleteObject(m_hBitmap);
 
 	int cySelf = curRect.bottom - curRect.top;
-	int resourceId = IDB_10_THROBBER_SIZE_SMALL;
+	EThemeBitmap eDesiredBitmap = EThemeBitmap::ThrobberSmall;
 
 	if (cySelf >= 38)
 	{
-		switch (m_theme)
-		{
-		default:
-		case CLASSIC_EXPLORER_10:
-			resourceId = IDB_10_THROBBER_SIZE_LARGE;
-			break;
-		case CLASSIC_EXPLORER_2K:
-			resourceId = IDB_2K_THROBBER_SIZE_LARGE;
-			break;
-		case CLASSIC_EXPLORER_MEMPHIS:
-			resourceId = IDB_MEMPHIS_THROBBER_SIZE_LARGE;
-			break;
-		case CLASSIC_EXPLORER_XP:
-			resourceId = IDB_XP_THROBBER_SIZE_LARGE;
-			break;
-		}
+		eDesiredBitmap = EThemeBitmap::ThrobberLarge;
 	}
 	else if (cySelf >= 26)
 	{
-		switch (m_theme)
-		{
-		default:
-		case CLASSIC_EXPLORER_10:
-			resourceId = IDB_10_THROBBER_SIZE_MID;
-			break;
-		case CLASSIC_EXPLORER_2K:
-			resourceId = IDB_2K_THROBBER_SIZE_MID;
-			break;
-		case CLASSIC_EXPLORER_MEMPHIS:
-			resourceId = IDB_MEMPHIS_THROBBER_SIZE_MID;
-			break;
-		case CLASSIC_EXPLORER_XP:
-			resourceId = IDB_XP_THROBBER_SIZE_MID;
-			break;
-		}
-	}
-	else
-	{
-		switch (m_theme)
-		{
-		default:
-		case CLASSIC_EXPLORER_10:
-			resourceId = IDB_10_THROBBER_SIZE_SMALL;
-			break;
-		case CLASSIC_EXPLORER_2K:
-			resourceId = IDB_2K_THROBBER_SIZE_SMALL;
-			break;
-		case CLASSIC_EXPLORER_MEMPHIS:
-			resourceId = IDB_MEMPHIS_THROBBER_SIZE_SMALL;
-			break;
-		case CLASSIC_EXPLORER_XP:
-			resourceId = IDB_XP_THROBBER_SIZE_SMALL;
-			break;
-		}
+		eDesiredBitmap = EThemeBitmap::ThrobberMedium;
 	}
 
-	m_hBitmap = LoadBitmapW(
-		_AtlBaseModule.GetResourceInstance(),
-		MAKEINTRESOURCEW(resourceId)
-	);
+	m_hBitmap = CEUtil::GetAppTheme()->GetBitmap(eDesiredBitmap).get();
 
 	BITMAP bmp;
 	GetObject(m_hBitmap, sizeof(bmp), &bmp);

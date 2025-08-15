@@ -9,6 +9,7 @@
 #include <string>
 #include "wil/resource.h"
 #include <map>
+#include <simpleini/SimpleIni.h>
 
 enum class EThemePartType : int
 {
@@ -95,6 +96,8 @@ interface ITheme
 	virtual COLORREF GetColor(EThemeColor colorName) PURE;
 	virtual wil::shared_hbitmap GetBitmap(EThemeBitmap bitmapName) PURE;
 	virtual SIZE GetBitmapSize(EThemeBitmap eBitmap) PURE;
+	virtual COLORREF GetBitmapMaskColor(EThemeBitmap eBitmap) PURE;
+	virtual HIMAGELIST LoadImageListFromBitmap(EThemeBitmap eBitmap) PURE;
 	virtual LPCWSTR FindBitmapResource(EThemeBitmap bitmapName) PURE;
 };
 
@@ -119,46 +122,94 @@ protected:
 	std::vector<ThemePropertyMap> _properties;
 };
 
+// Used by the theme loader to diffuse behaviour.
+enum class EForeignThemeType
+{
+	Dll,
+	Folder,
+};
+
 /*
- * CForeignTheme: Implementation of themes stored in foreign modules.
+ * CForeignThemeBase: Shared foreign theme code between DLL and folder loader methods.
  */
-class CForeignTheme 
+class CForeignThemeBase
 	: public ITheme
 	, private CThemeBase
 {
 public:
-	CForeignTheme();
+	CForeignThemeBase();
+
+	virtual EForeignThemeType GetForeignThemeType() PURE;
 
 	LPCWSTR GetThemeName() override { return _spszName.c_str(); }
 	LPCWSTR GetThemeAuthor() override { return _spszAuthor.c_str(); }
 	LPCWSTR GetThemeDescription() override { return _spszDescription.c_str(); }
 	LPCWSTR GetThemeVersion() override { return _spszVersion.c_str(); }
 
-	HINSTANCE GetResourceInstance() override
-	{
-		return _hModule;
-	}
-
 	bool GetBool(EThemeBool eBool) override;
 
 	COLORREF GetColor(EThemeColor colorName) override;
 
-	wil::shared_hbitmap GetBitmap(EThemeBitmap bitmapName) override;
-
 	SIZE GetBitmapSize(EThemeBitmap eBitmap) override;
+	COLORREF GetBitmapMaskColor(EThemeBitmap eBitmap) override;
 
-	LPCWSTR FindBitmapResource(EThemeBitmap bitmapName) override;
-
-private:
-	HMODULE _hModule = nullptr;
-
+protected:
 	// Foreign theme properties
 	std::wstring _spszName;
 	std::wstring _spszAuthor;
 	std::wstring _spszDescription;
 	std::wstring _spszVersion;
 	bool _fExplorerWatermarksEnabled = false;
+
+	friend class CThemeLoader;
+};
+
+/*
+ * CForeignThemeBaseDll: Implementation of themes stored in foreign modules.
+ */
+class CForeignThemeDll : public CForeignThemeBase
+{
+public:
+	HINSTANCE GetResourceInstance() override
+	{
+		return _hModule;
+	}
+
+	EForeignThemeType GetForeignThemeType() override { return EForeignThemeType::Dll; }
+
+	wil::shared_hbitmap GetBitmap(EThemeBitmap bitmapName) override;
+
+	LPCWSTR FindBitmapResource(EThemeBitmap bitmapName) override;
+
+	HIMAGELIST LoadImageListFromBitmap(EThemeBitmap eBitmap) override;
+
+private:
+	HMODULE _hModule = nullptr;
 	std::map<std::wstring, std::wstring> _mapFiles;
+
+	friend class CThemeLoader;
+};
+
+class CForeignThemeFolder : public CForeignThemeBase
+{
+public:
+	HINSTANCE GetResourceInstance() override
+	{
+		// Not possible.
+		return NULL;
+	}
+
+	EForeignThemeType GetForeignThemeType() override { return EForeignThemeType::Folder; }
+
+	wil::shared_hbitmap GetBitmap(EThemeBitmap bitmapName) override;
+
+	LPCWSTR FindBitmapResource(EThemeBitmap bitmapName) override;
+
+	HIMAGELIST LoadImageListFromBitmap(EThemeBitmap eBitmap) override;
+	
+private:
+	wil::shared_hbitmap _rgshbmBitmapParts[(int)EThemeBitmap::End - (int)EThemePartType::Bitmap];
+	WCHAR _rgszBitmapPaths[MAX_PATH][(int)EThemeBitmap::End - (int)EThemePartType::Bitmap];
 
 	friend class CThemeLoader;
 };
@@ -212,6 +263,10 @@ public:
 
 	SIZE GetBitmapSize(EThemeBitmap eBitmap) override;
 
+	COLORREF GetBitmapMaskColor(EThemeBitmap eBitmap) override;
+
+	HIMAGELIST LoadImageListFromBitmap(EThemeBitmap eBitmap) override;
+
 	LPCWSTR FindBitmapResource(EThemeBitmap bitmapName) override;
 };
 
@@ -220,8 +275,12 @@ class CThemeLoader
 public:
 	CThemeLoader();
 	HRESULT LoadForeignTheme(LPCWSTR szThemePath);
+	HRESULT LoadForeignThemeFromDll(LPCWSTR szThemePath);
+	HRESULT LoadForeignThemeFromFolder(LPCWSTR szThemeManifestPath);
 
 private:
+	HBITMAP LoadThemeBitmap(LPCWSTR szBitmapPath);
+
 	HRESULT ParseManifest(LPCWSTR szManifest);
 	std::tuple<HRESULT, COLORREF> ParseManifestColor(LPCWSTR szColor);
 	HRESULT InstallProperty(int ePart, EThemePartProperty eProperty);
@@ -230,6 +289,6 @@ private:
 
 	LPCWSTR _szThemeModulePath = nullptr;
 	HMODULE _hModule = nullptr;
-	std::unique_ptr<CForeignTheme> _spTheme = nullptr;
+	std::unique_ptr<CForeignThemeBase> _spTheme = nullptr;
 	std::unique_ptr<CSimpleIniW> _spIniReader = nullptr;
 };
