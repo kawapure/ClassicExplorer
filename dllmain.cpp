@@ -89,12 +89,24 @@ STDAPI DllInstall(BOOL bInstall, _In_opt_  LPCWSTR pszCmdLine)
 	return hr;
 }
 
+bool WINAPI IsDebuggerPresent_Stub()
+{
+	return true;
+}
+
 // DLL entry point, managed by ATL.
 extern "C" BOOL WINAPI DllMain(HINSTANCE hInstance, DWORD dwReason, LPVOID lpReserved)
 {
 	BOOL result = g_AtlModule.DllMain(dwReason, lpReserved);
 
-	CEUtil::CSettingsManager::CreateInstance();
+	wil::g_pfnIsDebuggerPresent = IsDebuggerPresent_Stub;
+	wil::g_fResultOutputDebugString = true;
+	wil::g_fIsDebuggerPresent = true;
+
+	if (dwReason == DLL_PROCESS_ATTACH)
+	{
+		CEUtil::CSettingsManager::CreateInstance();
+	}
 
 	return result;
 }

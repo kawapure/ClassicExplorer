@@ -131,6 +131,9 @@ LRESULT CAddressBar::CreateGoButton()
 
 	m_himlGoActive = CEUtil::GetAppTheme()->LoadImageListFromBitmap(EThemeBitmap::GoActive);
 
+	LOG_HR_IF_MSG(E_FAIL, m_himlGoInactive == NULL, "Failed to load inactive bitmap");
+	LOG_HR_IF_MSG(E_FAIL, m_himlGoActive == NULL, "Failed to load active bitmap");
+
 	m_goButton = CreateWindowEx(
 		WS_EX_TOOLWINDOW,
 		TOOLBARCLASSNAMEW,

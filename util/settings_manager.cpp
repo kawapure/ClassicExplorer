@@ -43,24 +43,25 @@ HRESULT CSettingsManager::Initialize()
 
 	size_t curBufferSize = MAX_PATH;
 
-	std::unique_ptr<WCHAR> szTextBuffer = std::make_unique<WCHAR>(curBufferSize);
+	WCHAR szThemePath[MAX_PATH] = { 0 };
 	DWORD dwTextSize = 0;
 
 	ls = RegGetValueW(hKey, NULL, L"Theme", RRF_RT_REG_SZ, NULL, nullptr, &dwTextSize);
 
-	if (ls != ERROR_SUCCESS)
+	if (ls == ERROR_SUCCESS && dwTextSize < MAX_PATH)
 	{
-		return E_FAIL;
-	}
+		ls = RegGetValueW(hKey, NULL, L"Theme", RRF_RT_REG_SZ, NULL, szThemePath, &dwTextSize);
 
-	if (dwTextSize > curBufferSize)
-	{
-		curBufferSize += dwTextSize * 2;
-		szTextBuffer.reset();
-		szTextBuffer = std::make_unique<WCHAR>(curBufferSize);
+		CThemeLoader themeLoader;
+		if (SUCCEEDED(themeLoader.LoadForeignTheme(szThemePath)))
+		{
+			_pAppTheme = themeLoader.ObtainTheme();
+		}
+		else
+		{
+			OutputDebugStringW(L"ClassicExplorer: failed to load foreign theme.");
+		}
 	}
-
-	ls = RegGetValueW(hKey, NULL, L"Theme", RRF_RT_REG_SZ, NULL, szTextBuffer.get(), &dwTextSize);
 
 	DWORD dwCurBoolProp;
 	DWORD dwValueSize = sizeof(DWORD);

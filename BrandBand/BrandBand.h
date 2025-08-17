@@ -17,7 +17,7 @@ class ATL_NO_VTABLE CBrandBand :
 	private: // Class members:
 		CComPtr<IWebBrowser2> m_pWebBrowser = NULL;
 		HWND m_parentRebar = NULL;
-		HBITMAP m_hBitmap = NULL;
+		wil::shared_hbitmap _shBitmap = NULL;
 		bool m_subclassedRebar = false;
 		bool m_alreadyDeletedSelf = false;
 		bool m_shouldManuallyCorrectHeight = false;

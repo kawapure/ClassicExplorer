@@ -56,6 +56,8 @@ static const ThemeBitmapInfo c_rgThemeBitmapInfo[(int)EThemeBitmap::End - (int)E
 
 static const ThemePropertyMap c_rgThemePropertyDefaults[] = {
 	{ (int)EThemeColor::ThrobberBackground, EThemePartProperty::Color, EMappedPropertyDataType::Integer, (int)RGB(0, 0, 0) },
+	{ (int)EThemeBitmap::GoActive, EThemePartProperty::MaskColor, EMappedPropertyDataType::Integer, (int)RGB(0, 0, 0) },
+	{ (int)EThemeBitmap::GoInactive, EThemePartProperty::MaskColor, EMappedPropertyDataType::Integer, (int)RGB(0, 0, 0) },
 	DEFINE_WIDTH_HEIGHT_PROPERTIES((int)EThemeBitmap::GoActive, 20, 20),
 	DEFINE_WIDTH_HEIGHT_PROPERTIES((int)EThemeBitmap::GoInactive, 20, 20),
 	DEFINE_WIDTH_HEIGHT_PROPERTIES((int)EThemeBitmap::ThrobberLarge, 38, 38),
@@ -205,7 +207,7 @@ COLORREF CNativeTheme::GetColor(EThemeColor colorName)
 		case EThemeColor::ThrobberBackground:
 		{
 			// Windows XP default background.
-			return RGB(0, 0, 0);
+			return RGB(255, 255, 255);
 		}
 	}
 
@@ -556,14 +558,52 @@ HRESULT CThemeLoader::LoadForeignThemeFromFolder(LPCWSTR szThemeManifestPath)
 		RETURN_HR_MSG(E_FAIL, "Failed to get manifest file size.");
 	}
 
-	std::unique_ptr<WCHAR> spszManifest = std::make_unique<WCHAR>(liFileSize.QuadPart);
+	// Ensure 2 byte null termination in case we directly get a UTF-16 string.
+	std::unique_ptr<BYTE[]> spszManifestRaw = std::make_unique<BYTE[]>(liFileSize.QuadPart + 2);
 
-	if (!ReadFile(shFile.get(), spszManifest.get(), liFileSize.QuadPart, NULL, NULL))
+	if (!spszManifestRaw)
+	{
+		RETURN_HR(E_OUTOFMEMORY);
+	}
+
+	ZeroMemory(spszManifestRaw.get(), liFileSize.QuadPart + 2);
+
+	if (!ReadFile(shFile.get(), spszManifestRaw.get(), liFileSize.QuadPart, NULL, NULL))
 	{
 		RETURN_HR_MSG(E_FAIL, "Failed to read manifest file.");
 	}
 
-	if (FAILED(ParseManifest(spszManifest.get())))
+	//// We now need to convert the manifest file to an encoding the operating system can work with
+	//// (in our case, UTF-16).
+	//std::unique_ptr<WCHAR[]> spwszManifest = nullptr;
+	//LPCWSTR pwszManifest = nullptr;
+	//if (!IsTextUnicode(spszManifestRaw.get(), liFileSize.QuadPart, nullptr))
+	//{
+	//	int cch = MultiByteToWideChar(CP_UTF8, 0, (LPCCH)spszManifestRaw.get(), -1, nullptr, 0);
+
+	//	spwszManifest = std::make_unique<WCHAR[]>(cch + 1);
+
+	//	if (!spwszManifest)
+	//	{
+	//		RETURN_HR(E_OUTOFMEMORY);
+	//	}
+
+	//	MultiByteToWideChar(CP_UTF8, 0, (LPCCH)spszManifestRaw.get(), -1, spwszManifest.get(), cch);
+
+	//	// Avoid the extra memory allocation if we don't need it (already UTF-16 input).
+	//	pwszManifest = spwszManifest.get();
+	//}
+	//else
+	//{
+	//	// We're already working with a wide string.
+	//	pwszManifest = (LPCWSTR)spszManifestRaw.get();
+	//}
+
+	//// Unicode in SimpleIni means "UTF-8", which we are not working with. Since we're working
+	//// with UTF-16 text, we make sure SimpleIni is not expecting UTF-8.
+	//_spIniReader->SetUnicode(false);
+
+	if (FAILED(ParseManifest((LPCWSTR)spszManifestRaw.get())))
 	{
 		// ParseManifest logs failures itself, so we don't bother here.
 		return E_FAIL;
@@ -610,7 +650,7 @@ HRESULT CThemeLoader::LoadForeignThemeFromDll(LPCWSTR szThemePath)
 
 HRESULT CThemeLoader::ParseManifest(LPCWSTR szManifest)
 {
-	SI_Error rc = _spIniReader->LoadData((LPCSTR)szManifest);
+	SI_Error rc = _spIniReader->LoadData((LPCSTR)szManifest, strlen((LPCSTR)szManifest) * 2 + 2 /* zero terminator */);
 
 	if (FAILED(rc))
 	{
@@ -626,7 +666,7 @@ HRESULT CThemeLoader::ParseManifest(LPCWSTR szManifest)
 	if (dwVersion == 0)
 	{
 		// Invalid manifest.
-		RETURN_HR_MSG(E_FAIL, "Attempted to a theme with an invalid version.");
+		RETURN_HR_MSG(E_FAIL, "Attempted to load a theme with an invalid version.");
 	}
 
 	//
@@ -755,15 +795,21 @@ HRESULT CThemeLoader::InstallProperty(int ePart, EThemePartProperty eProperty)
 {
 	LPCWSTR szPartName = GetIniPartName(ePart);
 
+	//LOG_HR_MSG(S_OK, "InstallProperty PartName: %s", szPartName);
+
 	if (!szPartName)
 	{
+		//LOG_HR_MSG(E_FAIL, "InstallProperty Failed to find PartName");
 		return E_FAIL;
 	}
 
 	LPCWSTR szPropertyName = GetIniPropertyName(eProperty);
 
+	//LOG_HR_MSG(S_OK, "InstallProperty PropertyName: %s", szPropertyName);
+
 	if (!szPropertyName)
 	{
+		//LOG_HR_MSG(E_FAIL, "InstallProperty Failed to find PropertyName");
 		return E_FAIL;
 	}
 
@@ -823,6 +869,8 @@ HRESULT CThemeLoader::_InstallIntegerProperty(int ePart, EThemePartProperty ePro
 	{
 		return E_FAIL;
 	}
+
+	OutputDebugString(pIniPath->c_str());
 
 	int iIniValue = _spIniReader->GetLongValue(
 		L"Properties",

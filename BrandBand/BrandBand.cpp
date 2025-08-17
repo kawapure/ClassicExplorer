@@ -16,7 +16,7 @@
 
 void CBrandBand::ClearResources()
 {
-	DeleteObject(m_hBitmap);
+	_shBitmap.reset();
 	m_pWebBrowser.Release();
 }
 
@@ -46,7 +46,7 @@ LRESULT CBrandBand::OnPaint(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL &bHand
 	DeleteObject(bgBrush);
 
 	HDC sourceDc = CreateCompatibleDC(dc);
-	HBITMAP oldBitmap = (HBITMAP)SelectObject(sourceDc, m_hBitmap);
+	HBITMAP oldBitmap = (HBITMAP)SelectObject(sourceDc, _shBitmap.get());
 
 	BitBlt(
 		dc, 
@@ -154,7 +154,7 @@ LRESULT CBrandBand::LoadBitmapForSize()
 	RECT curRect;
 	GetClientRect(&curRect);
 
-	DeleteObject(m_hBitmap);
+	_shBitmap.reset();
 
 	int cySelf = curRect.bottom - curRect.top;
 	EThemeBitmap eDesiredBitmap = EThemeBitmap::ThrobberSmall;
@@ -168,13 +168,21 @@ LRESULT CBrandBand::LoadBitmapForSize()
 		eDesiredBitmap = EThemeBitmap::ThrobberMedium;
 	}
 
-	m_hBitmap = CEUtil::GetAppTheme()->GetBitmap(eDesiredBitmap).get();
+	_shBitmap = CEUtil::GetAppTheme()->GetBitmap(eDesiredBitmap);
 
-	BITMAP bmp;
-	GetObject(m_hBitmap, sizeof(bmp), &bmp);
+	SIZE sizeBitmap = CEUtil::GetAppTheme()->GetBitmapSize(eDesiredBitmap);
 
-	m_cxCurBmp = bmp.bmWidth;
-	m_cyCurBmp = bmp.bmHeight;
+	m_cxCurBmp = sizeBitmap.cx;
+	m_cyCurBmp = sizeBitmap.cy;
+
+	if (m_cxCurBmp < 0 && m_cyCurBmp < 0)
+	{
+		BITMAP bmp;
+		GetObject(_shBitmap.get(), sizeof(bmp), &bmp);
+
+		m_cxCurBmp = bmp.bmWidth;
+		m_cyCurBmp = bmp.bmHeight;
+	}
 
 	return S_OK;
 }

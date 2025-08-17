@@ -25,10 +25,6 @@ enum class EThemeColor : int
 	Unknown = 0,
 	ThrobberBackground = EThemePartType::Color,
 
-	// Mask colours:
-	GoActive,
-	GoInactive,
-
 	// This value must always be the last in the enum:
 	End
 };
@@ -211,7 +207,7 @@ public:
 	
 private:
 	wil::shared_hbitmap _rgshbmBitmapParts[(int)EThemeBitmap::End - (int)EThemePartType::Bitmap];
-	WCHAR _rgszBitmapPaths[MAX_PATH][(int)EThemeBitmap::End - (int)EThemePartType::Bitmap];
+	WCHAR _rgszBitmapPaths[(int)EThemeBitmap::End - (int)EThemePartType::Bitmap][MAX_PATH];
 
 	friend class CThemeLoader;
 };
@@ -277,10 +273,16 @@ class CThemeLoader
 public:
 	CThemeLoader();
 	HRESULT LoadForeignTheme(LPCWSTR szThemePath);
+
+	inline CForeignThemeBase *ObtainTheme()
+	{
+		return _spTheme.release();
+	}
+
+private:
 	HRESULT LoadForeignThemeFromDll(LPCWSTR szThemePath);
 	HRESULT LoadForeignThemeFromFolder(LPCWSTR szThemeManifestPath);
 
-private:
 	HBITMAP LoadThemeBitmap(LPCWSTR szBitmapPath);
 
 	HRESULT ParseManifest(LPCWSTR szManifest);
