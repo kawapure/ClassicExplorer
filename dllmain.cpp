@@ -24,6 +24,8 @@ STDAPI DllGetClassObject(_In_ REFCLSID rclsid, _In_ REFIID riid, _Outptr_ LPVOID
 	return g_AtlModule.DllGetClassObject(rclsid, riid, ppv);
 }
 
+DEFINE_GUID(CATID_AppContainerCompatible, 0x59FB2056, 0xD625, 0x48D0, 0xA9, 0x44, 0x1A, 0x85, 0xB5, 0xAB, 0x26, 0x40);
+
 // DllRegisterServer - Adds entries to the system registry.
 _Use_decl_annotations_
 STDAPI DllRegisterServer(void)
@@ -42,8 +44,8 @@ STDAPI DllRegisterServer(void)
 
 		if (catRegister)
 		{
-			CATID CATID_AppContainerCompatible = { 0x59fb2056,0xd625,0x48d0,{0xa9,0x44,0x1a,0x85,0xb5,0xab,0x26,0x40} };
-			catRegister->RegisterClassImplCategories(CLSID_CAddressBarHostBand, 1, &CATID_AppContainerCompatible);
+			static CATID rgCatIDs[] = { CATID_AppContainerCompatible, CATID_DeskBand };
+			catRegister->RegisterClassImplCategories(CLSID_CAddressBarHostBand, ARRAYSIZE(rgCatIDs), rgCatIDs);
 		}
 	}
 
