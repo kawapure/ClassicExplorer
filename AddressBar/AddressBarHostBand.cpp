@@ -40,6 +40,32 @@ WCHAR CAddressBarHostBand::GetAddressAccelerator()
 
 	return L'\0';
 }
+/*
+ * CanRenderComposited: Indicates whether the Desk Band can render with DWM composition.
+ */
+STDMETHODIMP CAddressBarHostBand::CanRenderComposited(BOOL* pfCanRenderComposited)
+{
+	*pfCanRenderComposited = TRUE;
+	return S_OK;
+}
+
+/*
+ * SetCompositionState: Informs the Desk Band of the current DWM composition state.
+ */
+STDMETHODIMP CAddressBarHostBand::SetCompositionState(BOOL fCompositionEnabled)
+{
+	UNREFERENCED_PARAMETER(fCompositionEnabled);
+	return S_OK;
+}
+
+/*
+ * GetCompositionState: Queries the Desk Band for its DWM composition capabilities.
+ */
+STDMETHODIMP CAddressBarHostBand::GetCompositionState(BOOL* pfCompositionEnabled)
+{
+	*pfCompositionEnabled = TRUE;
+	return S_OK;
+}
 
 /*
  * GetBandInfo: This is queried by the Shell and must return relevant information about

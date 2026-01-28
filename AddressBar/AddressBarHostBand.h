@@ -14,7 +14,7 @@ class ATL_NO_VTABLE CAddressBarHostBand :
 	public CComObjectRootEx<CComSingleThreadModel>,
 	public CComCoClass<CAddressBarHostBand, &CLSID_CAddressBarHostBand>,
 	public IObjectWithSiteImpl<CAddressBarHostBand>,
-	public IDeskBand,
+	public IDeskBand2,
 	public IDispEventImpl<1, CAddressBarHostBand, &DIID_DWebBrowserEvents2, &LIBID_SHDocVw, 1, 1>,
 	public IInputObject,
 	public IInputObjectSite
@@ -44,6 +44,7 @@ class ATL_NO_VTABLE CAddressBarHostBand :
 			COM_INTERFACE_ENTRY(IObjectWithSite)
 			COM_INTERFACE_ENTRY_IID(IID_IDockingWindow, IDockingWindow)
 			COM_INTERFACE_ENTRY_IID(IID_IDeskBand, IDeskBand)
+			COM_INTERFACE_ENTRY_IID(IID_IDeskBand2, IDeskBand2)
 			COM_INTERFACE_ENTRY_IID(IID_IInputObject, IInputObject)
 		END_COM_MAP()
 
@@ -60,6 +61,11 @@ class ATL_NO_VTABLE CAddressBarHostBand :
 		
 		// implement IDeskBand:
 		STDMETHOD(GetBandInfo)(DWORD dwBandId, DWORD dwViewMode, DESKBANDINFO *pDbi);
+
+		// implement IDeskBand2:
+		STDMETHOD(CanRenderComposited)(BOOL* pfCanRenderComposited);
+		STDMETHOD(SetCompositionState)(BOOL fCompositionEnabled);
+		STDMETHOD(GetCompositionState)(BOOL* pfCompositionEnabled);
 
 		// implement IObjectWithSite:
 		STDMETHOD(SetSite)(IUnknown *pUnkSite);
@@ -83,7 +89,7 @@ class ATL_NO_VTABLE CAddressBarHostBand :
 		STDMETHOD(UIActivateIO)(BOOL fActivate, MSG *pMsg);
 
 		// implement IInputObjectSite:
-		STDMETHOD(OnFocusChangeIS)(IUnknown *pUnkObj, BOOL fSetFocus);
+		STDMETHOD(OnFocusChangeIS)(IUnknown* pUnkObj, BOOL fSetFocus);
 };
 
 OBJECT_ENTRY_AUTO(__uuidof(CAddressBarHostBand), CAddressBarHostBand);
