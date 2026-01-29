@@ -20,10 +20,10 @@ class ATL_NO_VTABLE CAddressBarHostBand :
 	public IInputObjectSite
 {
 	protected: // Class members:
-		IInputObjectSite *m_pSite = NULL;
-		HWND m_parentWindow = NULL;
+		IInputObjectSite *m_pSite = nullptr;
+		HWND m_parentWindow = nullptr;
 		CAddressBar m_addressBar;
-		CComPtr<IWebBrowser2> m_pWebBrowser = NULL;
+		CComPtr<IWebBrowser2> m_pWebBrowser = nullptr;
 		static std::wstring m_addressText;
 
 		friend class CAddressBar;

@@ -103,7 +103,7 @@ LRESULT CBrandBand::OnClick(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHand
 	AppendMenuW(hMenu, (m_theme == CLASSIC_EXPLORER_10 ? MF_CHECKED : MF_UNCHECKED) | MF_STRING, m_theme == CLASSIC_EXPLORER_10 ? 0 : 7002, L"10 Skin");
 
 
-	AppendMenuW(hMenu, MF_SEPARATOR, 0, 0);
+	AppendMenuW(hMenu, MF_SEPARATOR, 0, nullptr);
 
 	AppendMenuW(hMenu, (currentSettings.showGoButton ? MF_CHECKED : MF_UNCHECKED) | MF_STRING, 7010, L"Show Go button");
 	AppendMenuW(hMenu, (currentSettings.showAddressLabel ? MF_CHECKED : MF_UNCHECKED) | MF_STRING, 7011, L"Show Address label");
@@ -116,7 +116,7 @@ LRESULT CBrandBand::OnClick(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHand
 	GetWindow(&hWnd);
 	ClientToScreen(&p);
 
-	int sel = TrackPopupMenu(hMenu, TPM_RETURNCMD, p.x, p.y, 0, hWnd, NULL);
+	int sel = TrackPopupMenu(hMenu, TPM_RETURNCMD, p.x, p.y, 0, hWnd, nullptr);
 	DestroyMenu(hMenu);
 
 	if(sel == 0) // Current theme selected, or outside click, nothing changes
@@ -501,7 +501,7 @@ STDMETHODIMP CBrandBand::CloseDW(unsigned long dwReserved)
 	if (IsWindow())
 		DestroyWindow();
 
-	m_hWnd = NULL;
+	m_hWnd = nullptr;
 
 	return S_OK;
 }
@@ -537,13 +537,13 @@ STDMETHODIMP CBrandBand::SetSite(IUnknown *pUnkSite)
 	HRESULT hr;
 	CComPtr<IOleWindow> oleWindow;
 
-	if (pUnkSite == NULL)
+	if (pUnkSite == nullptr)
 	{
 		ClearResources();
 		return S_OK;
 	}
 
-	HWND hWndParent = NULL;
+	HWND hWndParent = nullptr;
 
 	CComQIPtr<IOleWindow> pOleWindow = pUnkSite;
 	if (pOleWindow)
@@ -556,8 +556,8 @@ STDMETHODIMP CBrandBand::SetSite(IUnknown *pUnkSite)
 
 	this->Create(
 		hWndParent,
-		NULL,
-		NULL,
+		nullptr,
+		nullptr,
 		WS_VISIBLE | WS_CHILD | WS_CLIPSIBLINGS | WS_CLIPCHILDREN
 	);
 	

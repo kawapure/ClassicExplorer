@@ -44,7 +44,7 @@ CESettings GetCESettings()
 	//DWORD size = 8;
 	DWORD size = sizeof(themeRead);
 
-	RegGetValueW(hKey, NULL, L"Theme", RRF_RT_REG_SZ, NULL, themeRead, &size);
+	RegGetValueW(hKey, nullptr, L"Theme", RRF_RT_REG_SZ, nullptr, themeRead, &size);
 	if (wcscmp(themeRead, L"XP") == 0)
 	{
 		theme = CLASSIC_EXPLORER_XP;
@@ -59,9 +59,9 @@ CESettings GetCESettings()
 	}
 	
 	DWORD dwValueSize = sizeof(DWORD);
-	RegGetValueW(hKey, NULL, L"ShowGoButton", RRF_RT_REG_DWORD, NULL, &fShowGoButton, &dwValueSize);
-	RegGetValueW(hKey, NULL, L"ShowAddressLabel", RRF_RT_REG_DWORD, NULL, &fShowAddressLabel, &dwValueSize);
-	RegGetValueW(hKey, NULL, L"ShowFullAddress", RRF_RT_REG_DWORD, NULL, &fShowFullAddress, &dwValueSize);
+	RegGetValueW(hKey, nullptr, L"ShowGoButton", RRF_RT_REG_DWORD, nullptr, &fShowGoButton, &dwValueSize);
+	RegGetValueW(hKey, nullptr, L"ShowAddressLabel", RRF_RT_REG_DWORD, nullptr, &fShowAddressLabel, &dwValueSize);
+	RegGetValueW(hKey, nullptr, L"ShowFullAddress", RRF_RT_REG_DWORD, nullptr, &fShowFullAddress, &dwValueSize);
 
 	RegCloseKey(hKey);
 
@@ -166,7 +166,7 @@ HRESULT FixExplorerSizes(HWND hWndExplorerChild)
 	if (!IsWindow(hWndExplorerRoot))
 		return E_FAIL;
 
-	HWND hWndTabWindow = FindWindowExW(hWndExplorerRoot, NULL, L"ShellTabWindowClass", NULL);
+	HWND hWndTabWindow = FindWindowExW(hWndExplorerRoot, nullptr, L"ShellTabWindowClass", nullptr);
 	if (!hWndTabWindow)
 		return E_FAIL;
 
@@ -201,11 +201,11 @@ HRESULT FixExplorerSizes(HWND hWndExplorerChild)
 
 	SetWindowPos(
 		hWndTabWindow,
-		NULL,
-		NULL,
-		NULL,
+		nullptr,
+		0,
+		0,
 		isInitialSizing ? 1300 : cxTabWindow + 1,
-		isInitialSizing ?  900 : cyTabWindow + 1,
+		isInitialSizing ? 900 : cyTabWindow + 1,
 		SWP_NOACTIVATE | SWP_NOOWNERZORDER | SWP_NOZORDER | SWP_NOMOVE | SWP_NOOWNERZORDER
 	);
 
@@ -213,16 +213,16 @@ HRESULT FixExplorerSizes(HWND hWndExplorerChild)
 	{
 		SetWindowPos(
 			hWndTabWindow,
-			NULL,
-			NULL,
-			NULL,
+			nullptr,
+			0,
+			0,
 			cxTabWindow,
 			cyTabWindow,
 			SWP_NOACTIVATE | SWP_NOOWNERZORDER | SWP_NOZORDER | SWP_NOMOVE | SWP_NOOWNERZORDER
 		);
 	}
 
-	RedrawWindow(hWndExplorerRoot, NULL, NULL, RDW_INVALIDATE);
+	RedrawWindow(hWndExplorerRoot, nullptr, nullptr, RDW_INVALIDATE);
 
 	return S_OK;
 }
@@ -242,9 +242,9 @@ HRESULT FixExplorerSizesIfNecessary(HWND explorerChild)
 	// A manual resize is necessary if the height of the ReBar host shell worker is
 	// different from the height of the ReBar:
 	{
-		HWND tab = FindWindowExW(explorerRoot, NULL, L"ShellTabWindowClass", NULL);
-		HWND worker = FindWindowExW(tab, NULL, L"WorkerW", NULL);
-		HWND rebar = FindWindowExW(worker, NULL, L"ReBarWindow32", NULL);
+		HWND tab = FindWindowExW(explorerRoot, nullptr, L"ShellTabWindowClass", nullptr);
+		HWND worker = FindWindowExW(tab, nullptr, L"WorkerW", nullptr);
+		HWND rebar = FindWindowExW(worker, nullptr, L"ReBarWindow32", nullptr);
 
 		// Worker must exist if this can be true.
 		if (IsWindow(rebar))

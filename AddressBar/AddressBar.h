@@ -14,17 +14,17 @@
 class CAddressBar : public CWindowImpl<CAddressBar>
 {
 	protected: // Class members:
-		CWindow m_toolbar = NULL;
-		CComPtr<IShellBrowser> m_pShellBrowser = NULL;
+		CWindow m_toolbar = nullptr;
+		CComPtr<IShellBrowser> m_pShellBrowser = nullptr;
 
-		HWND m_goButton = NULL;
-		HWND m_comboBox = NULL;
-		HWND m_comboBoxEditCtl = NULL;
+		HWND m_goButton = nullptr;
+		HWND m_comboBox = nullptr;
+		HWND m_comboBoxEditCtl = nullptr;
 
 		bool m_showGoButton = false;
 
-		HIMAGELIST m_himlGoInactive = NULL;
-		HIMAGELIST m_himlGoActive = NULL;
+		HIMAGELIST m_himlGoInactive = nullptr;
+		HIMAGELIST m_himlGoActive = nullptr;
 
 		WCHAR m_displayName[1024] = { 0 };
 		WCHAR m_currentPath[1024] = { 0 };
@@ -34,7 +34,7 @@ class CAddressBar : public CWindowImpl<CAddressBar>
 
 		// This Internet Explorer API is also compatible with File Explorer, and
 		// provides useful events.
-		CComPtr<IWebBrowser2> m_pWebBrowser = NULL;
+		CComPtr<IWebBrowser2> m_pWebBrowser = nullptr;
 
 		friend class CAddressBarHostBand;
 

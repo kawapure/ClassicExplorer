@@ -15,11 +15,11 @@ class ATL_NO_VTABLE BrowserHelperObject :
 	public IObjectWithSiteImpl<BrowserHelperObject>
 {
 	protected: // Class members:
-		IInputObjectSite *m_pSite = NULL;
-		HWND m_parentWindow = NULL;
-		CComPtr<IWebBrowser2> m_pWebBrowser = NULL;
-		CComPtr<IShellBrowser> m_pShellBrowser = NULL;
-		HHOOK m_hHook = NULL;
+		IInputObjectSite *m_pSite = nullptr;
+		HWND m_parentWindow = nullptr;
+		CComPtr<IWebBrowser2> m_pWebBrowser = nullptr;
+		CComPtr<IShellBrowser> m_pShellBrowser = nullptr;
+		HHOOK m_hHook = nullptr;
 
 	public: // COM class setup:
 		DECLARE_REGISTRY_RESOURCEID_V2_WITHOUT_MODULE(IDR_CLASSICEXPLORER, BrowserHelperObject)

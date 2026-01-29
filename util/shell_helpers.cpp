@@ -29,7 +29,7 @@ HRESULT GetLocalizedDisplayPath(const WCHAR *path, WCHAR *out, long length)
 
 	WCHAR truePath[2048] = { 0 };
 
-	WCHAR *buffer = NULL;
+	WCHAR *buffer = nullptr;
 	WCHAR *token = wcstok_s(copyPath, L"\\", &buffer);
 	int i = 0;
 
@@ -43,7 +43,7 @@ HRESULT GetLocalizedDisplayPath(const WCHAR *path, WCHAR *out, long length)
 		{
 			wcscat_s(out, length, token);
 			wcscat_s(truePath, token);
-			token = wcstok_s(NULL, L"\\", &buffer);
+			token = wcstok_s(nullptr, L"\\", &buffer);
 			continue;
 		}
 
@@ -57,10 +57,10 @@ HRESULT GetLocalizedDisplayPath(const WCHAR *path, WCHAR *out, long length)
 		PCITEMID_CHILD pidlChild;
 		hr = SHParseDisplayName(
 			truePath,
-			NULL,
+			nullptr,
 			&pidl,
-			NULL,
-			NULL
+			0,
+			nullptr
 		);
 
 		if (hr != S_OK)
@@ -93,7 +93,7 @@ HRESULT GetLocalizedDisplayPath(const WCHAR *path, WCHAR *out, long length)
 		wcscat_s(out, length, pszName);
 
 		// Grab the next token:
-		token = wcstok_s(NULL, L"\\", &buffer);
+		token = wcstok_s(nullptr, L"\\", &buffer);
 
 		i++;
 

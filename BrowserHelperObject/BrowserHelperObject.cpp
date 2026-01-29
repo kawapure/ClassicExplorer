@@ -14,8 +14,8 @@
 
 void BrowserHelperObject::Cleanup()
 {
-	m_pSite = NULL;
-	m_parentWindow = NULL;
+	m_pSite = nullptr;
+	m_parentWindow = nullptr;
 	//UnhookWindowsHookEx(m_hHook);
 }
 
@@ -63,18 +63,18 @@ HRESULT BrowserHelperObject::_DoUpdateWatermark(HWND listView)
 		bkImage.yOffsetPercent = 100;
 		bkImage.hbm = bitmap;
 
-		if (!SendMessageW(listView, LVM_SETBKIMAGEW, NULL, (LPARAM)&bkImage))
+		if (!SendMessageW(listView, LVM_SETBKIMAGEW, 0, (LPARAM)&bkImage))
 		{
 			DeleteObject(bitmap);
 			WCHAR buffer[128];
 			swprintf_s(buffer, L"Failed to apply background image on HWND: %x", listView);
-			MessageBoxW(NULL, buffer, L"Fuck you", MB_OK);
+			MessageBoxW(nullptr, buffer, L"Fuck you", MB_OK);
 		}
 	}
 	else
 	{
 		// Remove the background
-		SendMessageW(listView, LVM_SETBKIMAGEW, NULL, NULL);
+		SendMessageW(listView, LVM_SETBKIMAGEW, 0, 0);
 	}
 
 	return hr;
@@ -127,7 +127,7 @@ LRESULT CALLBACK BrowserHelperObject::s_HookProc(int nCode, WPARAM wParam, LPARA
 
 	}
 
-	return CallNextHookEx(NULL, nCode, wParam, lParam);
+	return CallNextHookEx(nullptr, nCode, wParam, lParam);
 }
 
 //================================================================================================================
@@ -145,14 +145,14 @@ STDMETHODIMP BrowserHelperObject::SetSite(IUnknown *pUnkSite)
 {
 	IObjectWithSiteImpl<BrowserHelperObject>::SetSite(pUnkSite);
 
-	// If pUnkSite is not NULL, then the site is being set.
+	// If pUnkSite is not nullptr, then the site is being set.
 	// Otherwise, the site is being removed.
 	if (pUnkSite) // hook:
 	{
 		CComQIPtr<IServiceProvider> pProvider = pUnkSite;
 
 		// Set Windows hooks for additional things:
-		//m_hHook = SetWindowsHookExW(WH_CBT, s_HookProc, NULL, GetCurrentThreadId());
+		//m_hHook = SetWindowsHookExW(WH_CBT, s_HookProc, nullptr, GetCurrentThreadId());
 
 		if (pProvider)
 		{
@@ -168,14 +168,14 @@ STDMETHODIMP BrowserHelperObject::SetSite(IUnknown *pUnkSite)
 				}
 			}
 
-			HWND parentWindow = NULL;
+			HWND parentWindow = nullptr;
 			if (SUCCEEDED(m_pShellBrowser->GetWindow(&parentWindow)))
 			{
 				m_parentWindow = GetAncestor(parentWindow, GA_ROOT);
 			}
 			else
 			{
-				MessageBox(NULL, NULL, L"could not get parent window", MB_OK);
+				MessageBox(nullptr, nullptr, L"could not get parent window", MB_OK);
 			}
 		}
 	}
