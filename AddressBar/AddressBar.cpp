@@ -125,15 +125,10 @@ LRESULT CAddressBar::CreateGoButton()
 
 	const TBBUTTON goButtonInfo[] = { {0, 1, TBSTATE_ENABLED, 0} };
 	HINSTANCE resourceInstance = _AtlBaseModule.GetResourceInstance();
-	int go_inactive_bitmap = IDB_10_GO_INACTIVE;
-	int go_active_bitmap = IDB_10_GO_ACTIVE;
 
-	if (m_theme == CLASSIC_EXPLORER_MEMPHIS)
-	{
-		go_inactive_bitmap = IDB_MEMPHIS_GO_INACTIVE;
-		go_active_bitmap = IDB_MEMPHIS_GO_ACTIVE;
-	}
-	else if (m_theme == CLASSIC_EXPLORER_2K)
+	int go_inactive_bitmap = IDB_2K_GO_INACTIVE;
+	int go_active_bitmap = IDB_2K_GO_ACTIVE;
+	if (m_theme == CLASSIC_EXPLORER_2K)
 	{
 		go_inactive_bitmap = IDB_2K_GO_INACTIVE;
 		go_active_bitmap = IDB_2K_GO_ACTIVE;
@@ -147,7 +142,7 @@ LRESULT CAddressBar::CreateGoButton()
 	m_himlGoInactive = ImageList_LoadImageW(
 		resourceInstance,
 		MAKEINTRESOURCEW(go_inactive_bitmap),
-		m_theme == CLASSIC_EXPLORER_MEMPHIS ? 18 : 20,
+		20,
 		0,
 		RGB(0, 0, 0),
 		IMAGE_BITMAP,
@@ -157,7 +152,7 @@ LRESULT CAddressBar::CreateGoButton()
 	m_himlGoActive = ImageList_LoadImageW(
 		resourceInstance,
 		MAKEINTRESOURCEW(go_active_bitmap),
-		m_theme == CLASSIC_EXPLORER_MEMPHIS ? 18 : 20,
+		20,
 		0,
 		RGB(0, 0, 0),
 		IMAGE_BITMAP,

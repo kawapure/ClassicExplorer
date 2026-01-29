@@ -36,12 +36,14 @@ LRESULT CBrandBand::OnPaint(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL &bHand
 	destinationPoint.y = (clientRect.bottom - clientRect.top - m_cyCurBmp) / 2;
 
 	COLORREF background;
-	if (m_theme == CLASSIC_EXPLORER_2K || m_theme == CLASSIC_EXPLORER_MEMPHIS)
+	if (m_theme == CLASSIC_EXPLORER_2K)
 	{
 		background = RGB(0, 0, 0);
 	}
 	else
+	{
 		background = RGB(255, 255, 255);
+	}
 
 	SetBkColor(dc, background);
 
@@ -97,11 +99,8 @@ LRESULT CBrandBand::OnClick(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHand
 
 	HMENU hMenu = CreatePopupMenu();
 
-	AppendMenuW(hMenu, (m_theme == CLASSIC_EXPLORER_MEMPHIS ? MF_CHECKED : MF_UNCHECKED) | MF_STRING, m_theme == CLASSIC_EXPLORER_MEMPHIS ? 0 : 7003, L"Memphis Skin");
 	AppendMenuW(hMenu, (m_theme == CLASSIC_EXPLORER_2K ? MF_CHECKED : MF_UNCHECKED) | MF_STRING, m_theme == CLASSIC_EXPLORER_2K ? 0 : 7000, L"2K Skin");
 	AppendMenuW(hMenu, (m_theme == CLASSIC_EXPLORER_XP ? MF_CHECKED : MF_UNCHECKED) | MF_STRING, m_theme == CLASSIC_EXPLORER_XP ? 0 : 7001, L"XP Skin");
-	AppendMenuW(hMenu, (m_theme == CLASSIC_EXPLORER_10 ? MF_CHECKED : MF_UNCHECKED) | MF_STRING, m_theme == CLASSIC_EXPLORER_10 ? 0 : 7002, L"10 Skin");
-
 
 	AppendMenuW(hMenu, MF_SEPARATOR, 0, nullptr);
 
@@ -129,12 +128,6 @@ LRESULT CBrandBand::OnClick(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHand
 	case 7001:
 		CEUtil::WriteCESettings(CEUtil::CESettings(CLASSIC_EXPLORER_XP, -1, -1,-1));
 		break;
-	case 7002:
-		CEUtil::WriteCESettings(CEUtil::CESettings(CLASSIC_EXPLORER_10, -1, -1,-1));
-		break;
-	case 7003:
-		CEUtil::WriteCESettings(CEUtil::CESettings(CLASSIC_EXPLORER_MEMPHIS, -1, -1, -1));
-		break;
 	case 7010:
 		CEUtil::WriteCESettings(CEUtil::CESettings(CLASSIC_EXPLORER_NONE, !currentSettings.showGoButton, -1, -1));
 		break;
@@ -161,21 +154,15 @@ LRESULT CBrandBand::LoadBitmapForSize()
 	DeleteObject(m_hBitmap);
 
 	int cySelf = curRect.bottom - curRect.top;
-	int resourceId = IDB_10_THROBBER_SIZE_SMALL;
+	int resourceId;
 
 	if (cySelf >= 38)
 	{
 		switch (m_theme)
 		{
 		default:
-		case CLASSIC_EXPLORER_10:
-			resourceId = IDB_10_THROBBER_SIZE_LARGE;
-			break;
 		case CLASSIC_EXPLORER_2K:
 			resourceId = IDB_2K_THROBBER_SIZE_LARGE;
-			break;
-		case CLASSIC_EXPLORER_MEMPHIS:
-			resourceId = IDB_MEMPHIS_THROBBER_SIZE_LARGE;
 			break;
 		case CLASSIC_EXPLORER_XP:
 			resourceId = IDB_XP_THROBBER_SIZE_LARGE;
@@ -187,14 +174,8 @@ LRESULT CBrandBand::LoadBitmapForSize()
 		switch (m_theme)
 		{
 		default:
-		case CLASSIC_EXPLORER_10:
-			resourceId = IDB_10_THROBBER_SIZE_MID;
-			break;
 		case CLASSIC_EXPLORER_2K:
 			resourceId = IDB_2K_THROBBER_SIZE_MID;
-			break;
-		case CLASSIC_EXPLORER_MEMPHIS:
-			resourceId = IDB_MEMPHIS_THROBBER_SIZE_MID;
 			break;
 		case CLASSIC_EXPLORER_XP:
 			resourceId = IDB_XP_THROBBER_SIZE_MID;
@@ -206,14 +187,8 @@ LRESULT CBrandBand::LoadBitmapForSize()
 		switch (m_theme)
 		{
 		default:
-		case CLASSIC_EXPLORER_10:
-			resourceId = IDB_10_THROBBER_SIZE_SMALL;
-			break;
 		case CLASSIC_EXPLORER_2K:
 			resourceId = IDB_2K_THROBBER_SIZE_SMALL;
-			break;
-		case CLASSIC_EXPLORER_MEMPHIS:
-			resourceId = IDB_MEMPHIS_THROBBER_SIZE_SMALL;
 			break;
 		case CLASSIC_EXPLORER_XP:
 			resourceId = IDB_XP_THROBBER_SIZE_SMALL;

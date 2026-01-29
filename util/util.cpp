@@ -49,14 +49,6 @@ CESettings GetCESettings()
 	{
 		theme = CLASSIC_EXPLORER_XP;
 	}
-	else if (wcscmp(themeRead, L"98") == 0)
-	{
-		theme = CLASSIC_EXPLORER_MEMPHIS;
-	}
-	else if (wcscmp(themeRead, L"10") == 0)
-	{
-		theme = CLASSIC_EXPLORER_10;
-	}
 	
 	DWORD dwValueSize = sizeof(DWORD);
 	RegGetValueW(hKey, nullptr, L"ShowGoButton", RRF_RT_REG_DWORD, nullptr, &fShowGoButton, &dwValueSize);
@@ -87,10 +79,6 @@ void WriteCESettings(CESettings& toWrite)
 		WCHAR theme[] = L"2K";
 		if (toWrite.theme == CLASSIC_EXPLORER_XP)
 			wcscpy_s(theme, L"XP");
-		if (toWrite.theme == CLASSIC_EXPLORER_MEMPHIS)
-			wcscpy_s(theme, L"98");
-		if (toWrite.theme == CLASSIC_EXPLORER_10)
-			wcscpy_s(theme, L"10");
 		RegSetValueExW(hKey, L"Theme", 0, REG_SZ, (BYTE*)theme, 4);
 	}
 	if (toWrite.showGoButton != -1)
